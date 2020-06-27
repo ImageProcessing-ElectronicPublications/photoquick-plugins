@@ -1,7 +1,7 @@
 # PhotoQuick plugins
 
 ### Description
-A set of plugins for the viewer [photoquick] (https://github.com/ImageProcessing-ElectronicPublications/photoquick)
+A set of plugins for the viewer [photoquick](https://github.com/ImageProcessing-ElectronicPublications/photoquick)
 
 ### Runtime Dependencies
 * libqtcore4  

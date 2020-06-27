@@ -2,44 +2,23 @@
 #include <cmath>
 #include <QInputDialog>
 
+#define PLUGIN_NAME_KUWAHARA "Kuwahara Filter"
+#define PLUGIN_NAME_PENCIL "Pencil Sketch"
+#define PLUGIN_MENU_KUWAHARA "Filter/Artistic/Kuwahara Filter"
+#define PLUGIN_MENU_PENCIL "Filter/Artistic/Pencil Sketch"
+#define PLUGIN_VERSION "4.3.1"
+
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+typedef struct {
+    int x;
+    int y;
+    int width;
+    int height;
+}RectInfo;
+
 Q_EXPORT_PLUGIN2(kuwahara, FilterPlugin);
-
-void kuwaharaFilter(QImage &img, int radius);
-void pencilSketch(QImage &img);
-
-QStringList
-FilterPlugin:: menuItems()
-{
-    return QStringList({"Filter/Artistic/Kuwahara Filter", "Filter/Artistic/Pencil Sketch"});
-}
-
-void
-FilterPlugin:: handleAction(QAction *action, int)
-{
-    if (action->text() == QString("Kuwahara Filter"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterKuwahara()));
-    else if (action->text() == QString("Pencil Sketch"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterPencilSketch()));
-    // here you can also set key shortcut to QAction
-}
-
-void
-FilterPlugin:: filterKuwahara()
-{
-    bool ok;
-    int radius = QInputDialog::getInt(canvas, "Blur Radius", "Enter Blur Radius :",
-                                        3/*val*/, 1/*min*/, 50/*max*/, 1/*step*/, &ok);
-    if (not ok) return;
-    kuwaharaFilter(canvas->image, radius);
-    emit imageChanged();
-}
-
-void
-FilterPlugin:: filterPencilSketch()
-{
-    pencilSketch(canvas->image);
-    emit imageChanged();
-}
 
 // takes 4 pixels and a floating point coordinate, returns bilinear interpolated pixel
 QRgb interpolateBilinear(float x, float y, QRgb p00, QRgb p01, QRgb p10, QRgb p11)
@@ -71,14 +50,6 @@ inline double getPixelLuma(double red, double green, double blue)
 {
   return (0.212656*red + 0.715158*green + 0.072186*blue);
 }
-
-
-typedef struct {
-    int x;
-    int y;
-    int width;
-    int height;
-}RectInfo;
 
 // Expand each size of Image by certain amount of border
 QImage expandBorder(QImage img, int width)
@@ -328,9 +299,6 @@ void kuwaharaFilter(QImage &img, int radius)
     } // end row loop
 }
 
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
-
 //**********----------- Box Blur -----------*************//
 // also called mean blur
 void boxFilter(QImage &img, int r/*blur radius*/)
@@ -447,4 +415,32 @@ void pencilSketch(QImage &img)
     }
 }
 
+QStringList FilterPlugin:: menuItems()
+{
+    return QStringList({PLUGIN_MENU_KUWAHARA, PLUGIN_MENU_PENCIL});
+}
 
+void FilterPlugin:: handleAction(QAction *action, int)
+{
+    if (action->text() == QString(PLUGIN_NAME_KUWAHARA))
+        connect(action, SIGNAL(triggered()), this, SLOT(filterKuwahara()));
+    else if (action->text() == QString(PLUGIN_NAME_PENCIL))
+        connect(action, SIGNAL(triggered()), this, SLOT(filterPencilSketch()));
+    // here you can also set key shortcut to QAction
+}
+
+void FilterPlugin:: filterKuwahara()
+{
+    bool ok;
+    int radius = QInputDialog::getInt(canvas, "Blur Radius", "Enter Blur Radius :",
+                                        3/*val*/, 1/*min*/, 50/*max*/, 1/*step*/, &ok);
+    if (not ok) return;
+    kuwaharaFilter(canvas->image, radius);
+    emit imageChanged();
+}
+
+void FilterPlugin:: filterPencilSketch()
+{
+    pencilSketch(canvas->image);
+    emit imageChanged();
+}

@@ -1,24 +1,12 @@
 #include "invert.h"
 #include <cmath>
+
+#define PLUGIN_NAME "Invert%Negative"
+#define PLUGIN_MENU "Filter/Color/Invert%Negative"
+#define PLUGIN_VERSION "4.3.1"
+
 // first parameter is name of plugin, usually same as the library file name
 Q_EXPORT_PLUGIN2(invert, FilterPlugin);
-
-void invert(QImage &img);
-
-QString
-FilterPlugin:: menuItem()
-{
-    // if you need / in menu name, use % character. Because / is path separator here
-    return QString("Filter/Color/Invert%Negative");
-}
-
-void
-FilterPlugin:: onMenuClick()
-{
-    invert(canvas->image);
-    emit imageChanged();
-}
-
 
 //********* ---------- Invert Colors or Negate --------- ********** //
 void invert(QImage &img)
@@ -31,4 +19,14 @@ void invert(QImage &img)
     }
 }
 
+QString FilterPlugin:: menuItem()
+{
+    // if you need / in menu name, use % character. Because / is path separator here
+    return QString(PLUGIN_MENU);
+}
 
+void FilterPlugin:: onMenuClick()
+{
+    invert(canvas->image);
+    emit imageChanged();
+}

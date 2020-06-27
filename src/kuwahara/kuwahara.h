@@ -20,4 +20,3 @@ signals:
     void optimumSizeRequested();
     void sendNotification(QString title, QString message);
 };
-

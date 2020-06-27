@@ -2,29 +2,12 @@
 #include <QDialogButtonBox>
 #include <QGridLayout>
 
+#define PLUGIN_NAME "Bimodal Threshold"
+#define PLUGIN_MENU "Filter/Color/Threshold Bimod"
+#define PLUGIN_VERSION "4.3.1"
+
 // first parameter is name of plugin, usually same as the library file name
 Q_EXPORT_PLUGIN2(bimodal_thresh, FilterPlugin);
-
-void thresholdBimod(QImage &img, int tcount, int tdelta, bool median);
-
-QString
-FilterPlugin:: menuItem()
-{
-    return QString("Filter/Color/Threshold Bimod");
-}
-
-void
-FilterPlugin:: onMenuClick()
-{
-    BimodThreshDialog *dlg = new BimodThreshDialog(canvas);
-    if (dlg->exec()==QDialog::Accepted) {
-        int count = dlg->countSpin->value();
-        int delta = dlg->deltaSpin->value();
-        thresholdBimod(canvas->image, count, delta, dlg->medianBtn->isChecked());
-        emit imageChanged();
-    }
-}
-
 
 // ********************** Bimodal Threshold *********************
 // clamp an integer in 0-255 range
@@ -141,12 +124,10 @@ void thresholdBimod(QImage &img, int tcount, int tdelta, bool median)
     }
 }
 
-
 // **************** Bimodal Threshold Dialog ******************
-
 BimodThreshDialog:: BimodThreshDialog(QWidget *parent) : QDialog(parent)
 {
-    this->setWindowTitle("Bimodal Threshold");
+    this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
     QGridLayout *gridLayout = new QGridLayout(this);
@@ -177,4 +158,20 @@ BimodThreshDialog:: BimodThreshDialog(QWidget *parent) : QDialog(parent)
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+}
+
+QString FilterPlugin:: menuItem()
+{
+    return QString(PLUGIN_MENU);
+}
+
+void FilterPlugin:: onMenuClick()
+{
+    BimodThreshDialog *dlg = new BimodThreshDialog(canvas);
+    if (dlg->exec()==QDialog::Accepted) {
+        int count = dlg->countSpin->value();
+        int delta = dlg->deltaSpin->value();
+        thresholdBimod(canvas->image, count, delta, dlg->medianBtn->isChecked());
+        emit imageChanged();
+    }
 }
