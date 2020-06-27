@@ -1,0 +1,12 @@
+# Compiled Binaries
+*.so
+*.o
+*.a
+*.exe
+
+# Auto-genereated files
+Makefile
+moc_*.cpp
+build/
+
+TODO
