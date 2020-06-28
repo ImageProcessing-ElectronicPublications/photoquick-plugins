@@ -2,8 +2,8 @@ HEADERS = kuwahara.h
 SOURCES = kuwahara.cpp
 
 TARGET  = $$qtLibraryTarget(kuwahara)
-DESTDIR = ..
-INCLUDEPATH += ..
+DESTDIR = ../..
+INCLUDEPATH += $$DESTDIR
 
 TEMPLATE        = lib
 CONFIG         += plugin
@@ -11,8 +11,8 @@ QMAKE_CXXFLAGS  = -std=c++11 -fopenmp
 QMAKE_LFLAGS   += -s
 LIBS           += -lgomp
 
-MOC_DIR =     ../build
-OBJECTS_DIR = ../build
+MOC_DIR =     $$DESTDIR/build
+OBJECTS_DIR = $$DESTDIR/build
 
 unix {
     INSTALLS += target
