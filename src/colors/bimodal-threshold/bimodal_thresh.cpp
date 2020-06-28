@@ -3,8 +3,8 @@
 #include <QGridLayout>
 
 #define PLUGIN_NAME "Bimodal Threshold"
-#define PLUGIN_MENU "Filter/Color/Threshold Bimod"
-#define PLUGIN_VERSION "4.3.1"
+#define PLUGIN_MENU "Filters/Color/Threshold Bimod"
+#define PLUGIN_VERSION "4.3.3"
 
 // first parameter is name of plugin, usually same as the library file name
 Q_EXPORT_PLUGIN2(bimodal_thresh, FilterPlugin);

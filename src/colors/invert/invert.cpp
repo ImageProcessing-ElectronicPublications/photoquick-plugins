@@ -2,8 +2,8 @@
 #include <cmath>
 
 #define PLUGIN_NAME "Invert%Negative"
-#define PLUGIN_MENU "Filter/Color/Invert%Negative"
-#define PLUGIN_VERSION "4.3.1"
+#define PLUGIN_MENU "Filters/Color/Invert%Negative"
+#define PLUGIN_VERSION "4.3.3"
 
 // first parameter is name of plugin, usually same as the library file name
 Q_EXPORT_PLUGIN2(invert, FilterPlugin);

@@ -4,9 +4,9 @@
 
 #define PLUGIN_NAME_KUWAHARA "Kuwahara Filter"
 #define PLUGIN_NAME_PENCIL "Pencil Sketch"
-#define PLUGIN_MENU_KUWAHARA "Filter/Artistic/Kuwahara Filter"
-#define PLUGIN_MENU_PENCIL "Filter/Artistic/Pencil Sketch"
-#define PLUGIN_VERSION "4.3.1"
+#define PLUGIN_MENU_KUWAHARA "Filters/Artistic/Kuwahara Filter"
+#define PLUGIN_MENU_PENCIL "Filters/Artistic/Pencil Sketch"
+#define PLUGIN_VERSION "4.3.3"
 
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
