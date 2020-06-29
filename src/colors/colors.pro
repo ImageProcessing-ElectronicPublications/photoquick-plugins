@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = bimodal-threshold greyworld invert kuwahara
+SUBDIRS = bimodal-threshold invert kuwahara
