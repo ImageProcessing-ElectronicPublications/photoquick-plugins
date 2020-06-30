@@ -1,5 +1,4 @@
 #include "invert.h"
-#include <cmath>
 
 #define PLUGIN_NAME "Invert%Negative"
 #define PLUGIN_MENU "Filters/Color/Invert%Negative"

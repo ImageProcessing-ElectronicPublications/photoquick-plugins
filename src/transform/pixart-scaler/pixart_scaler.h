@@ -28,12 +28,11 @@ signals:
 };
 
 // XBR scaler
-void xbr_init_data();
 void xbr_filter_xbr2x(uint32_t* src, uint32_t *dst, int width, int height);
 void xbr_filter_xbr3x(uint32_t* src, uint32_t *dst, int width, int height);
 void xbr_filter_xbr4x(uint32_t* src, uint32_t *dst, int width, int height);
 
 // ScaleX scaler
-void scaler_scalex_2x(uint32_t *,  uint32_t *, int, int);
-void scaler_scalex_3x(uint32_t *,  uint32_t *, int, int);
-void scaler_scalex_4x(uint32_t *,  uint32_t *, int, int);
+void scaler_scalex_2x(uint32_t* src, uint32_t *dst, int width, int height);
+void scaler_scalex_3x(uint32_t* src, uint32_t *dst, int width, int height);
+void scaler_scalex_4x(uint32_t* src, uint32_t *dst, int width, int height);

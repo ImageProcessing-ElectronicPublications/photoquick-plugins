@@ -30,35 +30,47 @@
  * @see https://github.com/yoyofr/iFBA/blob/master/fba_src/src/intf/video/scalers/xbr.cpp
  */
 
-#define XBR_INTERNAL
 #include <cstdint>
 #include <cstdlib>
 
-/*
-xbr_data *xbrData;
-xbr_data xbrLookupTable; // Allocate the lookup table ~16MB
-*/
-uint32_t   XBR_RGBtoYUV[16777216]; // TODO: can this be shared between HQX & XBR?  ~16MB of lookup table
 
 #define LB_MASK       0x00FEFEFE
 #define RED_BLUE_MASK 0x00FF00FF
 #define GREEN_MASK    0x0000FF00
 #define PART_MASK     0x00FF00FF
 
-static uint32_t pixel_diff(uint32_t x, uint32_t y, const uint32_t *r2y)
-{
 #define YMASK 0xff0000
 #define UMASK 0x00ff00
 #define VMASK 0x0000ff
 
-    uint32_t yuv1 = r2y[x & 0xffffff];
-    uint32_t yuv2 = r2y[y & 0xffffff];
+#define ALPHA(rgb) ((rgb >> 24) & 0xff)
+#define RED(rgb)   ((rgb >> 16) & 0xff)
+#define GREEN(rgb) ((rgb >> 8) & 0xff)
+#define BLUE(rgb)  (rgb & 0xff)
+
+
+int rgb2yuv(uint32_t x)
+{
+    int g = GREEN(x);
+    int rg = RED(x) - GREEN(x);
+    int bg = BLUE(x) - GREEN(x);
+    uint y = (uint)(( 299*rg + 1000*g + 114*bg)/1000);
+    uint u = (uint)((-169*rg + 500*bg)/1000) + 128;
+    uint v = (uint)(( 500*rg -  81*bg)/1000) + 128;
+    return (y << 16) + (u << 8) + v;
+}
+
+uint32_t pixel_diff(uint32_t x, uint32_t y)
+{
+    uint32_t yuv1 = rgb2yuv(x);
+    uint32_t yuv2 = rgb2yuv(y);
 
     return (abs((x >> 24) - (y >> 24))) +
            (abs((yuv1 & YMASK) - (yuv2 & YMASK)) >> 16) +
            (abs((yuv1 & UMASK) - (yuv2 & UMASK)) >>  8) +
            abs((yuv1 & VMASK) - (yuv2 & VMASK));
 }
+
 
 #define ALPHA_BLEND_BASE(a, b, m, s) (  (PART_MASK & (((a) & PART_MASK) + (((((b) & PART_MASK) - ((a) & PART_MASK)) * (m)) >> (s)))) \
                                       | ((PART_MASK & ((((a) >> 8) & PART_MASK) + ((((((b) >> 8) & PART_MASK) - (((a) >> 8) & PART_MASK)) * (m)) >> (s)))) << 8))
@@ -71,7 +83,7 @@ static uint32_t pixel_diff(uint32_t x, uint32_t y, const uint32_t *r2y)
 
 
 
-#define df(A, B) pixel_diff(A, B, r2y)
+#define df(A, B) pixel_diff(A, B)
 #define eq(A, B) (df(A, B) < 155)
 
 #define FILT2(PE, PI, PH, PF, PG, PC, PD, PB, PA, G5, C4, G0, D0, C1, B1, F4, I4, H5, I5, A0, A1,   \
@@ -196,24 +208,18 @@ static uint32_t pixel_diff(uint32_t x, uint32_t y, const uint32_t *r2y)
     }                                                                                               \
 } while (0)
 
-//static inline void xbr_filter(const xbr_params *params, int n)
-static inline void xbr_filter( uint32_t * sp, uint32_t * dp, int Xres, int Yres, int scaleFactor )
+static void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight, int scaleFactor )
 {
-    // TODO: This is making a 4 BPP (RGBA) assumption
-    int Bpp = 4; // RGBA
+    int Bpp = 4; // ARGB32 format
 
     // Compatibility vars from changed function def
     int       n = scaleFactor;
-    uint8_t * input = (uint8_t *)sp;
-    uint8_t * output = (uint8_t *)dp;
-    int       inWidth = Xres;
-    int       inHeight = Yres;
+    uint8_t * input = (uint8_t*) src;
+    uint8_t * output = (uint8_t*) dst;
     int       input_width_bytes = inWidth * Bpp;
     int       output_width_bytes = inWidth * scaleFactor * Bpp;
 
-
     int x, y;
-    const uint32_t *r2y = XBR_RGBtoYUV;
     const int nl = output_width_bytes >> 2;
     const int nl1 = nl + nl;
     const int nl2 = nl1 + nl;
@@ -312,71 +318,22 @@ static inline void xbr_filter( uint32_t * sp, uint32_t * dp, int Xres, int Yres,
     }
 }
 
-// void hq2x_32_rb( uint32_t * sp, uint32_t srb, uint32_t * dp, uint32_t drb, int Xres, int Yres )
-/*
-#define XBR_FUNC(size) \
-void xbr_filter_xbr##size##x(const xbr_params *params) \
-{ \
-    xbr_filter(params, size); \
-}
-*/
 
 
-void xbr_filter_xbr2x( uint32_t * sp,  uint32_t * dp, int Xres, int Yres )
+void xbr_filter_xbr2x(uint32_t *src,  uint32_t *dst, int inWidth, int inHeight )
 {
-    xbr_filter( sp, dp, Xres, Yres, 2); // 2x scale factor
+    xbr_filter( src, dst, inWidth, inHeight, 2); // 2x scale factor
 }
 
 
-void xbr_filter_xbr3x( uint32_t * sp, uint32_t * dp, int Xres, int Yres )
+void xbr_filter_xbr3x(uint32_t *src,  uint32_t *dst, int inWidth, int inHeight)
 {
-    xbr_filter( sp, dp, Xres, Yres, 3); // 3x scale factor
+    xbr_filter( src, dst, inWidth, inHeight, 3); // 3x scale factor
 }
 
 
-void xbr_filter_xbr4x( uint32_t * sp, uint32_t * dp, int Xres, int Yres )
+void xbr_filter_xbr4x(uint32_t *src,  uint32_t *dst, int inWidth, int inHeight)
 {
-    xbr_filter( sp, dp, Xres, Yres, 4); // 4x scale factor
+    xbr_filter( src, dst, inWidth, inHeight, 4); // 4x scale factor
 }
 
-
-
-
-
-static inline int _max(int a, int b)
-{
-	return (a > b) ? a : b;
-}
-
-static inline int _min(int a, int b)
-{
-	return (a < b) ? a : b;
-}
-
-
-//void xbr_init_data(xbr_data *data)
-// TODO, is this lookup table redundant with the HQX -> hqxInit() rgbtoyuv lookup table?
-void xbr_init_data()
-{
-
-//    xbrData = &xbrLookupTable;
-
-    uint32_t c;
-    int bg, rg, g;
-
-    for (bg = -255; bg < 256; bg++) {
-        for (rg = -255; rg < 256; rg++) {
-            const uint32_t u = (uint32_t)((-169*rg + 500*bg)/1000) + 128;
-            const uint32_t v = (uint32_t)(( 500*rg -  81*bg)/1000) + 128;
-            int startg = _max(-bg, _max(-rg, 0));
-            int endg = _min(255-bg, _min(255-rg, 255));
-            uint32_t y = (uint32_t)(( 299*rg + 1000*startg + 114*bg)/1000);
-            c = bg + (rg<<16) + 0x010101 * startg;
-            for (g = startg; g <= endg; g++) {
-                XBR_RGBtoYUV[c] = ((y++) << 16) + (u << 8) + v;
-                c+= 0x010101;
-            }
-        }
-    }
-
-}

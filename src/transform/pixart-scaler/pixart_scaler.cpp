@@ -1,11 +1,15 @@
 #include "pixart_scaler.h"
 
+#define PLUGIN_NAME "Pixart Scalers"
+#define PLUGIN_VERSION "1.1"
+
 Q_EXPORT_PLUGIN2(pixart-scaler, FilterPlugin);
 
 QStringList
 FilterPlugin:: menuItems()
 {
-    QStringList menu = {"Transform/Upscale Icon/Scale2x", "Transform/Upscale Icon/Scale3x",
+    QStringList menu = {
+        "Transform/Upscale Icon/Scale2x", "Transform/Upscale Icon/Scale3x",
         "Transform/Upscale Icon/Scale4x", "Transform/Upscale Icon/xBr 2x",
         "Transform/Upscale Icon/xBr 3x", "Transform/Upscale Icon/xBr 4x"};
     return menu;
@@ -47,15 +51,9 @@ FilterPlugin:: filterScaleX(int n/*factor*/)
 void (*xbr_filter_func[3])(uint*,uint*,int,int) = {
                 xbr_filter_xbr2x, xbr_filter_xbr3x, xbr_filter_xbr4x};
 
-static bool xbr_initialized = false;
-
 void
 FilterPlugin:: filterXBR(int n/*factor*/)
 {
-    if (not xbr_initialized) {
-        xbr_init_data();
-        xbr_initialized = true;
-    }
     int w = canvas->image.width();
     int h = canvas->image.height();
     void *src = canvas->image.bits();
