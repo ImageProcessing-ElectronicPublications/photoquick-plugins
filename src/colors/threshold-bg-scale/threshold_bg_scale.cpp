@@ -14,7 +14,7 @@ void thresholdBgScale(QImage &img, int thresh, int scaledW)
     int imgW = img.width();
     int imgH = img.height();
     // first downscale then upscale to blur image
-    QImage scaledImg = img.scaledToWidth(scaledW, Qt::SmoothTransformation);
+    QImage scaledImg = img.scaled(scaledW, scaledW, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     scaledImg = scaledImg.scaled(imgW, imgH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
     for (int y=0; y<imgH; y++) {
@@ -39,7 +39,7 @@ PluginDialog:: PluginDialog(QWidget *parent) : QDialog(parent)
 
     thresholdSpin = new QSpinBox(this);
     thresholdSpin->setAlignment(Qt::AlignCenter);
-    thresholdSpin->setRange(0, 255);
+    thresholdSpin->setRange(-127, 127);
     gridLayout->addWidget(thresholdSpin, 0, 1, 1, 1);
 
     QLabel *label_2 = new QLabel("Downscale Size :", this);
