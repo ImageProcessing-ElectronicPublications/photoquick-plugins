@@ -26,6 +26,6 @@ QString FilterPlugin:: menuItem()
 
 void FilterPlugin:: onMenuClick()
 {
-    invert(canvas->image);
+    invert(data->image);
     emit imageChanged();
 }

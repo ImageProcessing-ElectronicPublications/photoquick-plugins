@@ -9,9 +9,10 @@ QStringList
 FilterPlugin:: menuItems()
 {
     QStringList menu = {
-        "Transform/Upscale Icon/Scale2x", "Transform/Upscale Icon/Scale3x",
-        "Transform/Upscale Icon/Scale4x", "Transform/Upscale Icon/xBr 2x",
-        "Transform/Upscale Icon/xBr 3x", "Transform/Upscale Icon/xBr 4x"};
+        "Transform/Upscale Icon/xBr 2x", "Transform/Upscale Icon/xBr 3x",
+        "Transform/Upscale Icon/xBr 4x", "Transform/Upscale Icon/Scale2x",
+        "Transform/Upscale Icon/Scale3x", "Transform/Upscale Icon/Scale4x",
+         };
     return menu;
 }
 
@@ -38,13 +39,13 @@ void (*scaler_scalex_func[3])(uint*,uint*,int,int) = {
 void
 FilterPlugin:: filterScaleX(int n/*factor*/)
 {
-    int w = canvas->image.width();
-    int h = canvas->image.height();
-    void *src = canvas->image.bits();
-    QImage dstImg(n*w, n*h, canvas->image.format());
+    int w = data->image.width();
+    int h = data->image.height();
+    void *src = data->image.bits();
+    QImage dstImg(n*w, n*h, data->image.format());
     void *dst = dstImg.bits();
     scaler_scalex_func[n-2]((uint*)src, (uint*)dst, w, h);
-    canvas->image = dstImg;
+    data->image = dstImg;
     emit imageChanged();
 }
 
@@ -54,13 +55,13 @@ void (*xbr_filter_func[3])(uint*,uint*,int,int) = {
 void
 FilterPlugin:: filterXBR(int n/*factor*/)
 {
-    int w = canvas->image.width();
-    int h = canvas->image.height();
-    void *src = canvas->image.bits();
-    QImage dstImg(n*w, n*h, canvas->image.format());
+    int w = data->image.width();
+    int h = data->image.height();
+    void *src = data->image.bits();
+    QImage dstImg(n*w, n*h, data->image.format());
     void *dst = dstImg.bits();
     xbr_filter_func[n-2]((uint*)src, (uint*)dst, w, h);
-    canvas->image = dstImg;
+    data->image = dstImg;
     emit imageChanged();
 }
 

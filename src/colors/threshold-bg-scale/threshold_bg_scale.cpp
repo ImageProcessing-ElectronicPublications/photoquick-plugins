@@ -1,4 +1,5 @@
 #include "threshold_bg_scale.h"
+#include <QLabel>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 
@@ -67,11 +68,11 @@ QString FilterPlugin:: menuItem()
 
 void FilterPlugin:: onMenuClick()
 {
-    PluginDialog *dlg = new PluginDialog(canvas);
+    PluginDialog *dlg = new PluginDialog(data->window);
     if (dlg->exec()==QDialog::Accepted) {
         int threshold = dlg->thresholdSpin->value();
         int scaledW = dlg->downscaledSizeSpin->value();
-        thresholdBgScale(canvas->image, threshold, scaledW);
+        thresholdBgScale(data->image, threshold, scaledW);
         emit imageChanged();
     }
 }

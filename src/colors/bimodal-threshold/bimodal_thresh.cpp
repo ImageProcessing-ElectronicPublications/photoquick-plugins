@@ -1,4 +1,5 @@
 #include "bimodal_thresh.h"
+#include <QLabel>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 
@@ -167,11 +168,11 @@ QString FilterPlugin:: menuItem()
 
 void FilterPlugin:: onMenuClick()
 {
-    BimodThreshDialog *dlg = new BimodThreshDialog(canvas);
+    BimodThreshDialog *dlg = new BimodThreshDialog(data->window);
     if (dlg->exec()==QDialog::Accepted) {
         int count = dlg->countSpin->value();
         int delta = dlg->deltaSpin->value();
-        thresholdBimod(canvas->image, count, delta, dlg->medianBtn->isChecked());
+        thresholdBimod(data->image, count, delta, dlg->medianBtn->isChecked());
         emit imageChanged();
     }
 }

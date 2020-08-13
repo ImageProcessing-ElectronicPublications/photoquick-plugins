@@ -36,37 +36,37 @@ void FilterPlugin:: handleAction(QAction *action, int)
 
 void FilterPlugin:: filterHRISX(int n/*factor*/)
 {
-    int w = canvas->image.width();
-    int h = canvas->image.height();
-    void *src = canvas->image.bits();
-    QImage dstImg(n*w, n*h, canvas->image.format());
+    int w = data->image.width();
+    int h = data->image.height();
+    void *src = data->image.bits();
+    QImage dstImg(n*w, n*h, data->image.format());
     void *dst = dstImg.bits();
     scaler_hris((uint*)src, (uint*)dst, w, h, n);
-    canvas->image = dstImg;
+    data->image = dstImg;
     emit imageChanged();
 }
 
 void FilterPlugin:: filterGSampleX(int n/*factor*/)
 {
-    int w = canvas->image.width();
-    int h = canvas->image.height();
-    void *src = canvas->image.bits();
-    QImage dstImg(n*w, n*h, canvas->image.format());
+    int w = data->image.width();
+    int h = data->image.height();
+    void *src = data->image.bits();
+    QImage dstImg(n*w, n*h, data->image.format());
     void *dst = dstImg.bits();
     gsample((uint*)src, (uint*)dst, w, h, n);
-    canvas->image = dstImg;
+    data->image = dstImg;
     emit imageChanged();
 }
 
 void FilterPlugin:: filterMeanX(int n/*factor*/)
 {
-    int w = canvas->image.width();
-    int h = canvas->image.height();
-    void *src = canvas->image.bits();
-    QImage dstImg((w+n-1)/n, (h+n-1)/n, canvas->image.format());
+    int w = data->image.width();
+    int h = data->image.height();
+    void *src = data->image.bits();
+    QImage dstImg((w+n-1)/n, (h+n-1)/n, data->image.format());
     void *dst = dstImg.bits();
     scaler_mean_x((uint*)src, (uint*)dst, w, h, n);
-    canvas->image = dstImg;
+    data->image = dstImg;
     emit imageChanged();
 }
 
