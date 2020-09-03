@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = colors transform
+SUBDIRS = colors transform threshold

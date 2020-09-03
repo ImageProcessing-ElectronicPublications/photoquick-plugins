@@ -4,7 +4,7 @@
 #include <QGridLayout>
 
 #define PLUGIN_NAME "Threshold BG Scale"
-#define PLUGIN_MENU "Filters/Color/Threshold BG Scale"
+#define PLUGIN_MENU "Filters/Threshold/Threshold BG Scale"
 #define PLUGIN_VERSION "1.0"
 
 Q_EXPORT_PLUGIN2(threshold-bg-scale, FilterPlugin);
