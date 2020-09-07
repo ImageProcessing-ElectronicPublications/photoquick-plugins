@@ -1,5 +1,7 @@
 #pragma once
 #include "plugin.h"
+#include <QDialog>
+#include <QDoubleSpinBox>
 
 
 class FilterPlugin : public QObject, Plugin
@@ -17,4 +19,14 @@ signals:
     void imageChanged();
     void optimumSizeRequested();
     void sendNotification(QString title, QString message);
+};
+
+
+class Mantiuk06Dialog : public QDialog
+{
+public:
+    QDoubleSpinBox *contrastSpin;
+    QDoubleSpinBox *saturationSpin;
+
+    Mantiuk06Dialog(QWidget *parent);
 };
