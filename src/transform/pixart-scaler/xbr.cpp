@@ -48,7 +48,7 @@
 #define GREEN(rgb) ((rgb >> 8) & 0xff)
 #define BLUE(rgb)  (rgb & 0xff)
 
-
+// it is actually YCbCr Colorspace in full [0, 255] range
 int rgb2yuv(uint32_t x)
 {
     int g = GREEN(x);

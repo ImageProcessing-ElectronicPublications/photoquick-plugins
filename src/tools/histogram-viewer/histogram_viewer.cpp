@@ -1,4 +1,6 @@
-/* This file is a part of PhotoQuick Plugins project, and is GNU GPLv3 licensed */
+/*  This file is a part of PhotoQuick Plugins project, and is GNU GPLv3 licensed
+    Copyright (C) 2020 Arindam Chaudhuri <ksharindam@gmail.com>
+*/
 #include "histogram_viewer.h"
 #include <cmath>
 #include <QPainter>

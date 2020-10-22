@@ -11,6 +11,8 @@
 #define MIN(a,b) (((a)<(b))?(a):(b))
 #define MAX(a,b) (((a)>(b))?(a):(b))
 
+#define PI 3.141593f
+
 typedef struct {
     int x;
     int y;
@@ -195,7 +197,7 @@ void gaussianBlur(QImage &img, int radius, float sigma/*standard deviation*/)
     {
         int u = i - radius;
         double alpha = exp(-(u*u)/(2.0*sigma*sigma));
-        kernel[i] = alpha/(sqrt(2*M_PI)*sigma);
+        kernel[i] = alpha/(sqrt(2*PI)*sigma);
     }
     convolve1D(img, kernel, kernel_width);
 }

@@ -1,3 +1,6 @@
+/*  This file is a part of PhotoQuick Plugins project, and is GNU GPLv3 licensed
+    Copyright (C) 2020 Arindam Chaudhuri <ksharindam@gmail.com>
+*/
 #include "pixart_scaler.h"
 
 #define PLUGIN_NAME "Pixart Scalers"
