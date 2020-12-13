@@ -12,17 +12,29 @@ Q_EXPORT_PLUGIN2(threshold-bg-scale, FilterPlugin);
 //***** ------ Threshold by difference from Blurred Background ----- ***** //
 void thresholdBgScale(QImage &img, int thresh, int scaledW)
 {
+    int x, y, r, g, b, a;
     int imgW = img.width();
     int imgH = img.height();
     // first downscale then upscale to blur image
     QImage scaledImg = img.scaled(scaledW, scaledW, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     scaledImg = scaledImg.scaled(imgW, imgH, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
-    for (int y=0; y<imgH; y++) {
+    for (y = 0; y < imgH; y++)
+    {
         QRgb* line = (QRgb*) img.scanLine(y);
         QRgb* lineScaled = (QRgb*) scaledImg.constScanLine(y);
-        for (int x=0; x<imgW; x++) {
-            line[x] = ( qGray(lineScaled[x])) - qGray(line[x]) > thresh ? 0xff000000 : 0xffffffff;
+        for (x = 0; x < imgW; x++)
+        {
+            r = qRed(lineScaled[x]);
+            r -= qRed(line[x]);
+            g = qGreen(lineScaled[x]);
+            g -= qGreen(line[x]);
+            b = qBlue(lineScaled[x]);
+            b -= qBlue(line[x]);
+            r = (r > thresh) ? 0 : 255;
+            g = (g > thresh) ? 0 : 255;
+            b = (b > thresh) ? 0 : 255;
+            line[x] = qRgba(r, g, b, qAlpha(line[x]));
         }
     }
 }
