@@ -62,7 +62,7 @@ void unalpha(QImage &img)
             r = Clamp(r);
             g = Clamp(g);
             b = Clamp(b);
-            row[x] = qRgba(r, g, b, 255);
+            row[x] = qRgb(r, g, b);
         }
     }
 }
