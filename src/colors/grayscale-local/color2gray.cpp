@@ -13,6 +13,7 @@ Color to grayscale conversion, uses envelopes formed with the STRESS approach
 */
 #include <QImage>
 #include <cmath>
+#include <ctime>
 
 inline float srgb_to_linear(float value)
 {

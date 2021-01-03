@@ -54,9 +54,9 @@ int rgb2yuv(uint32_t x)
     int g = GREEN(x);
     int rg = RED(x) - GREEN(x);
     int bg = BLUE(x) - GREEN(x);
-    uint y = (uint)(( 299*rg + 1000*g + 114*bg)/1000);
-    uint u = (uint)((-169*rg + 500*bg)/1000) + 128;
-    uint v = (uint)(( 500*rg -  81*bg)/1000) + 128;
+    int y = (int)(( 299*rg + 1000*g + 114*bg)/1000);
+    int u = (int)((-169*rg + 500*bg)/1000) + 128;
+    int v = (int)(( 500*rg -  81*bg)/1000) + 128;
     return (y << 16) + (u << 8) + v;
 }
 

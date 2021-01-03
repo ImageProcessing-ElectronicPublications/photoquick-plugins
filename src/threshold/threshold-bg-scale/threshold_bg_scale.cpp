@@ -31,10 +31,11 @@ void thresholdBgScale(QImage &img, int thresh, int scaledW)
             g -= qGreen(line[x]);
             b = qBlue(lineScaled[x]);
             b -= qBlue(line[x]);
+			a = qAlpha(line[x]);
             r = (r > thresh) ? 0 : 255;
             g = (g > thresh) ? 0 : 255;
             b = (b > thresh) ? 0 : 255;
-            line[x] = qRgba(r, g, b, qAlpha(line[x]));
+            line[x] = qRgba(r, g, b, a);
         }
     }
 }
