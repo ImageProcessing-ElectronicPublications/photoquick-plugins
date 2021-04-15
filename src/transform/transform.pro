@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = pixart-scaler ris-scaler
+SUBDIRS = pixart-scaler ris-scaler geoconformal
