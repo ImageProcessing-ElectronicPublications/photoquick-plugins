@@ -350,6 +350,7 @@ GCIparams GCIcalcallparams(GCIparams params)
     w = (int)(cd2.y * params.m + 0.5f);
     params.size2.height = (h > 0) ? h : 1;
     params.size2.width = (w > 0) ? w : 1;
+    params.complete = 1;
 
     return params;
 }

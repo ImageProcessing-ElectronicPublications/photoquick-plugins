@@ -77,6 +77,7 @@ extern "C" {
 
     typedef struct
     {
+        unsigned n;
         GCIcoord p[4];
         GCIcoord min, max, mean;
     }
@@ -95,7 +96,7 @@ extern "C" {
         GCIctrans trans;
         GCIrect rect1, rect2;
         float m, mi;
-        int iters;
+        int iters, complete;
     }
     GCIparams;
 

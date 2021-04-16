@@ -38,3 +38,16 @@ public:
 
     GeoConformalDialog(QWidget *parent);
 };
+
+class GeoConformalWarningDialog : public QDialog
+{
+public:
+    QLabel *labelnc;
+    QLineEdit *textnc;
+    QLabel *labelns;
+    QLineEdit *textns;
+    QString snc;
+    QString sns;
+
+    GeoConformalWarningDialog(QWidget *parent);
+};
