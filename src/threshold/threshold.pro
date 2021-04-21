@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = bimodal-threshold threshold-bg-scale dither
+SUBDIRS = bimodal-threshold threshold-bg-scale dither dalg
