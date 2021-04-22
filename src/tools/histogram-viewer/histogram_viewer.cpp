@@ -11,7 +11,7 @@
 
 
 #define PLUGIN_NAME "Histogram Viewer"
-#define PLUGIN_MENU "Tools/Histogram Viewer"
+#define PLUGIN_MENU "Info/Histogram Viewer"
 #define PLUGIN_VERSION "1.0"
 
 Q_EXPORT_PLUGIN2(histogram-viewer, ToolPlugin);
