@@ -4,37 +4,10 @@
 #include "pixart_scaler.h"
 
 #define PLUGIN_NAME "Pixart Scalers"
-#define PLUGIN_VERSION "1.1"
+#define PLUGIN_MENU "Transform/Upscale Icon"
+#define PLUGIN_VERSION "1.2"
 
 Q_EXPORT_PLUGIN2(pixart-scaler, FilterPlugin);
-
-QStringList
-FilterPlugin:: menuItems()
-{
-    QStringList menu = {
-        "Transform/Upscale Icon/xBr 2x", "Transform/Upscale Icon/xBr 3x",
-        "Transform/Upscale Icon/xBr 4x", "Transform/Upscale Icon/Scale2x",
-        "Transform/Upscale Icon/Scale3x", "Transform/Upscale Icon/Scale4x",
-         };
-    return menu;
-}
-
-void
-FilterPlugin:: handleAction(QAction *action, int)
-{
-    if (action->text() == QString("Scale2x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterScale2x()));
-    else if (action->text() == QString("Scale3x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterScale3x()));
-    else if (action->text() == QString("Scale4x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterScale4x()));
-    else if (action->text() == QString("xBr 2x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterXBR2x()));
-    else if (action->text() == QString("xBr 3x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterXBR3x()));
-    else if (action->text() == QString("xBr 4x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterXBR4x()));
-}
 
 void (*scaler_scalex_func[3])(uint*,uint*,int,int) = {
                 scaler_scalex_2x, scaler_scalex_3x, scaler_scalex_4x};
@@ -68,39 +41,59 @@ FilterPlugin:: filterXBR(int n/*factor*/)
     emit imageChanged();
 }
 
-void
-FilterPlugin:: filterScale2x()
+// **************** RIS Dialog ******************
+UpscaleDialog:: UpscaleDialog(QWidget *parent) : QDialog(parent)
 {
-    filterScaleX(2);
+    this->setWindowTitle(PLUGIN_NAME);
+    this->resize(320, 158);
+
+    QGridLayout *gridLayout = new QGridLayout(this);
+
+    QLabel *labelMethod = new QLabel("Method :", this);
+    gridLayout->addWidget(labelMethod, 0, 0, 1, 1);
+    comboMethod = new QComboBox(this);
+    QStringList items = { "ScaleX", "xBr"};
+    comboMethod->addItems(items);
+    gridLayout->addWidget(comboMethod, 0, 1, 1, 1);
+
+    QLabel *labelMult = new QLabel("Mult :", this);
+    gridLayout->addWidget(labelMult, 1, 0, 1, 1);
+    spinMult = new QSpinBox(this);
+    spinMult->setAlignment(Qt::AlignCenter);
+    spinMult->setRange(2,4);
+    spinMult->setValue(2);
+    gridLayout->addWidget(spinMult, 1, 1, 1, 1);
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+    gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
+
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
-void
-FilterPlugin:: filterScale3x()
+QString FilterPlugin:: menuItem()
 {
-    filterScaleX(3);
+    return QString(PLUGIN_MENU);
 }
 
-void
-FilterPlugin:: filterScale4x()
+void FilterPlugin:: onMenuClick()
 {
-    filterScaleX(4);
+    UpscaleDialog *dlg = new UpscaleDialog(data->window);
+    if (dlg->exec() == QDialog::Accepted)
+    {
+        int method = dlg->comboMethod->currentIndex();
+        int mult = dlg->spinMult->value();
+        switch (method)
+        {
+        case 0:
+            filterScaleX(mult);
+            break;
+        case 1:
+            filterXBR(mult);
+            break;
+        default:
+            break;
+        }
+    }
 }
-
-void
-FilterPlugin:: filterXBR2x()
-{
-    filterXBR(2);
-}
-
-void
-FilterPlugin:: filterXBR3x()
-{
-    filterXBR(3);
-}
-
-void
-FilterPlugin:: filterXBR4x()
-{
-    filterXBR(4);
-}
-

@@ -1,6 +1,12 @@
 #pragma once
 #include "plugin.h"
-
+#include <QString>
+#include <QDialog>
+#include <QDialogButtonBox>
+#include <QGridLayout>
+#include <QLabel>
+#include <QComboBox>
+#include <QSpinBox>
 
 class FilterPlugin : public QObject, Plugin
 {
@@ -8,23 +14,26 @@ class FilterPlugin : public QObject, Plugin
     Q_INTERFACES(Plugin)
 
 public:
-    QStringList menuItems();
+    QString menuItem();
     void filterScaleX(int n);
     void filterXBR(int n);
 
 public slots:
-    void handleAction(QAction *action, int type);
-    void filterScale2x();
-    void filterScale3x();
-    void filterScale4x();
-    void filterXBR2x();
-    void filterXBR3x();
-    void filterXBR4x();
+    void onMenuClick();
 
 signals:
     void imageChanged();
     void optimumSizeRequested();
     void sendNotification(QString title, QString message);
+};
+
+class UpscaleDialog : public QDialog
+{
+public:
+    QComboBox *comboMethod;
+    QSpinBox *spinMult;
+
+    UpscaleDialog(QWidget *parent);
 };
 
 // XBR scaler

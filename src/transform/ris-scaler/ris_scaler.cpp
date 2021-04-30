@@ -5,34 +5,10 @@ extern "C"
 }
 
 #define PLUGIN_NAME "RIS Scalers"
+#define PLUGIN_MENU "Transform/RIS"
 #define PLUGIN_VERSION "1.0"
 
 Q_EXPORT_PLUGIN2(ris-scaler, FilterPlugin);
-
-QStringList FilterPlugin:: menuItems()
-{
-    QStringList menu = {
-        "Transform/RIS/HRIS_2x", "Transform/RIS/HRIS_3x",
-        "Transform/RIS/GSample_2x", "Transform/RIS/GSample_3x",
-        "Transform/RIS/Mean_2r", "Transform/RIS/Mean_3r"};
-    return menu;
-}
-
-void FilterPlugin:: handleAction(QAction *action, int)
-{
-    if (action->text() == QString("HRIS_2x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterHRIS2x()));
-    else if (action->text() == QString("HRIS_3x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterHRIS3x()));
-    else if (action->text() == QString("GSample_2x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterGSample2x()));
-    else if (action->text() == QString("GSample_3x"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterGSample3x()));
-    else if (action->text() == QString("Mean_2r"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterMean2r()));
-    else if (action->text() == QString("Mean_3r"))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterMean3r()));
-}
 
 void FilterPlugin:: filterHRISX(int n/*factor*/)
 {
@@ -70,33 +46,62 @@ void FilterPlugin:: filterMeanX(int n/*factor*/)
     emit imageChanged();
 }
 
-void FilterPlugin:: filterHRIS2x()
+// **************** RIS Dialog ******************
+RISDialog:: RISDialog(QWidget *parent) : QDialog(parent)
 {
-    filterHRISX(2);
+    this->setWindowTitle(PLUGIN_NAME);
+    this->resize(320, 158);
+
+    QGridLayout *gridLayout = new QGridLayout(this);
+
+    QLabel *labelMethod = new QLabel("Method :", this);
+    gridLayout->addWidget(labelMethod, 0, 0, 1, 1);
+    comboMethod = new QComboBox(this);
+    QStringList items = { "GSample", "HRIS", "Mean"};
+    comboMethod->addItems(items);
+    gridLayout->addWidget(comboMethod, 0, 1, 1, 1);
+
+    QLabel *labelMult = new QLabel("Mult :", this);
+    gridLayout->addWidget(labelMult, 1, 0, 1, 1);
+    spinMult = new QSpinBox(this);
+    spinMult->setAlignment(Qt::AlignCenter);
+    spinMult->setRange(2,3);
+    spinMult->setValue(2);
+    gridLayout->addWidget(spinMult, 1, 1, 1, 1);
+
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
+    gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
+
+    connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 }
 
-void FilterPlugin:: filterHRIS3x()
+QString FilterPlugin:: menuItem()
 {
-    filterHRISX(3);
+    return QString(PLUGIN_MENU);
 }
 
-void FilterPlugin:: filterGSample2x()
+void FilterPlugin:: onMenuClick()
 {
-    filterGSampleX(2);
+    RISDialog *dlg = new RISDialog(data->window);
+    if (dlg->exec() == QDialog::Accepted)
+    {
+        int method = dlg->comboMethod->currentIndex();
+        int mult = dlg->spinMult->value();
+        switch (method)
+        {
+        case 0:
+            filterGSampleX(mult);
+            break;
+        case 1:
+            filterHRISX(mult);
+            break;
+        case 2:
+            filterMeanX(mult);
+            break;
+        default:
+            break;
+        }
+    }
 }
-
-void FilterPlugin:: filterGSample3x()
-{
-    filterGSampleX(3);
-}
-
-void FilterPlugin:: filterMean2r()
-{
-    filterMeanX(2);
-}
-
-void FilterPlugin:: filterMean3r()
-{
-    filterMeanX(3);
-}
-

@@ -12,18 +12,16 @@ Q_EXPORT_PLUGIN2(geoconformal, FilterPlugin);
 
 GCIparams GeoConformalParams(QImage &img, QString sparams, QString sregion, unsigned iters)
 {
-    int nk = 0, y, x, yr;
     GCIparams params;
-    IMTimage imgin, imgout;
     int imgW = img.width();
     int imgH = img.height();
 
     params.complete = 0;
     params.iters = (iters > 1) ? iters : COUNTG;
     char* chparams = sparams.toLocal8Bit().data();
-    params.trans.na = sscanf(chparams, "%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf,%lf", &params.trans.a[0], &params.trans.a[1], &params.trans.a[2], &params.trans.a[3], &params.trans.a[4], &params.trans.a[5], &params.trans.a[6], &params.trans.a[7], &params.trans.a[8], &params.trans.a[9], &params.trans.a[10], &params.trans.a[11], &params.trans.a[12], &params.trans.a[13], &params.trans.a[14], &params.trans.a[15], &params.trans.a[16], &params.trans.a[17], &params.trans.a[18], &params.trans.a[19]);
+    params.trans.na = sscanf(chparams, "%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf", &params.trans.a[0], &params.trans.a[1], &params.trans.a[2], &params.trans.a[3], &params.trans.a[4], &params.trans.a[5], &params.trans.a[6], &params.trans.a[7], &params.trans.a[8], &params.trans.a[9], &params.trans.a[10], &params.trans.a[11], &params.trans.a[12], &params.trans.a[13], &params.trans.a[14], &params.trans.a[15], &params.trans.a[16], &params.trans.a[17], &params.trans.a[18], &params.trans.a[19]);
     char* chregion = sregion.toLocal8Bit().data();
-    params.rect1.n = sscanf(chregion, "%f,%f,%f,%f", &params.rect1.p[0].x, &params.rect1.p[0].y, &params.rect1.p[2].x, &params.rect1.p[2].y);
+    params.rect1.n = sscanf(chregion, "%f;%f;%f;%f", &params.rect1.p[0].x, &params.rect1.p[0].y, &params.rect1.p[2].x, &params.rect1.p[2].y);
 
     params.size1.width = imgW;
     params.size1.height = imgH;

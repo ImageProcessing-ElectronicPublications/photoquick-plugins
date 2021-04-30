@@ -32,8 +32,8 @@ public:
     QLineEdit *textp;
     QLineEdit *textr;
     QLineEdit *texti;
-    QString sparams = "0,0,1,0";
-    QString sregion = "0,0,100,100";
+    QString sparams = "0;0;1;0";
+    QString sregion = "0;0;100;100";
     QString siters = "10";
 
     GeoConformalDialog(QWidget *parent);
