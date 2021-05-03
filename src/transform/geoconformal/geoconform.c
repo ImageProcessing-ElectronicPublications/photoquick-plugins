@@ -130,46 +130,85 @@ IMTimage IMTfree (IMTimage im)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-IMTpixel IMTinterpolation (IMTimage p_im, GCIcoord p)
+////////////////////////////////////////////////////////////////////////////////
+
+IMTpixel IMTInterpolateBiCubic (IMTimage p_im, GCIcoord p)
 {
-    unsigned d, y1, x1, y2, x2;
-    float p11, p21, p12, p22, ky, kx, k11, k21, k12, k22, t;
+    int i, d, xi, yi, xf, yf;
+    float d0, d2, d3, a0, a1, a2, a3;
+    float x, y, dx, dy;
+    float k2 = 1.0f / 2.0f, k3 = 1.0f / 3.0f, k6 = 1.0f / 6.0f;
+    float Cc, C[4];
     IMTpixel res;
 
-    y1 = IndexClamp((int)p.x, (p_im.size.height - 1));
-    x1 = IndexClamp((int)p.y, (p_im.size.width - 1));
-    y2 = IndexClamp((int)(y1 + 1), (p_im.size.height - 1));
-    x2 = IndexClamp((int)(x1 + 1), (p_im.size.width - 1));
-    ky = p.x - y1;
-    if (ky < 0)
+    y = p.x;
+    x = p.y;
+    yi = IndexClamp((int)y, (p_im.size.height - 1));
+    xi = IndexClamp((int)x, (p_im.size.width - 1));
+    dy = y - yi;
+    dx = x - xi;
+    for(d = 0; d < COUNTC; d++)
     {
-        ky = 0.0;
+        for(i = -1; i < 3; i++)
+        {
+            yf = IndexClamp((int)(y + i), (p_im.size.height - 1));
+            xf = IndexClamp((int)x, (p_im.size.width - 1));
+            a0 = p_im.p[yf][xf].c[d];
+            xf = IndexClamp((int)(x - 1), (p_im.size.width - 1));
+            d0 = p_im.p[yf][xf].c[d];
+            d0 -= a0;
+            xf = IndexClamp((int)(x + 1), (p_im.size.width - 1));
+            d2 = p_im.p[yf][xf].c[d];
+            d2 -= a0;
+            xf = IndexClamp((int)(x + 2), (p_im.size.width - 1));
+            d3 = p_im.p[yf][xf].c[d];
+            d3 -= a0;
+            a1 = -k3 * d0 + d2 - k6 * d3;
+            a2 = k2 * d0 + k2 * d2;
+            a3 = -k6 * d0 - k2 * d2 + k6 * d3;
+            C[i + 1] = a0 + (a1 + (a2 + a3 * dx) * dx) * dx;
+        }
+        a0 = C[1];
+        d0 = C[0] - a0;
+        d2 = C[2] - a0;
+        d3 = C[3] - a0;
+        a1 = -k3 * d0 + d2 - k6 * d3;
+        a2 = k2 * d0 + k2 * d2;
+        a3 = -k6 * d0 - k2 * d2 + k6 * d3;
+        Cc = a0 + (a1 + (a2 + a3 * dy) * dy) * dy;
+        res.c[d] = ByteClamp((int)(Cc + 0.5f));
     }
-    if (ky > 1)
-    {
-        ky = 1.0;
-    }
-    kx = p.y - x1;
-    if (kx < 0)
-    {
-        kx = 0.0;
-    }
-    if (kx > 1)
-    {
-        kx = 1.0;
-    }
-    k11 = (1.0 - ky) * (1.0 - kx);
-    k21 = ky * (1.0 - kx);
-    k12 = (1.0 - ky) * kx;
-    k22 = ky * kx;
+    res = IMTcalcS (res);
+
+    return res;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+IMTpixel IMTInterpolateBiLine (IMTimage p_im, GCIcoord p)
+{
+    int d, xi, yi, xf, yf;
+    float x, y, dx1, dy1, dx2, dy2;
+    float p11, p12, p21, p22;
+    IMTpixel res;
+    
+    y = p.x;
+    x = p.y;
+    yi = IndexClamp((int)y, (p_im.size.height - 1));
+    xi = IndexClamp((int)x, (p_im.size.width - 1));
+    dy1 = y - yi;
+    dx1 = x - xi;
+    dy2 = 1.0f - dy1;
+    dx2 = 1.0f - dx1;
+    yf = IndexClamp((int)(y + 1), (p_im.size.height - 1));
+    xf = IndexClamp((int)(x + 1), (p_im.size.width - 1));
     for (d = 0; d < COUNTC; d++)
     {
-        p11 = (float)p_im.p[y1][x1].c[d];
-        p21 = (float)p_im.p[y2][x1].c[d];
-        p12 = (float)p_im.p[y1][x2].c[d];
-        p22 = (float)p_im.p[y2][x2].c[d];
-        t = p11 * k11 + p21 * k21 + p12 * k12 + p22 * k22;
-        res.c[d] = ByteClamp((int)(t + 0.5));
+        p11 = p_im.p[yi][xi].c[d];
+        p12 = p_im.p[yi][xf].c[d];
+        p21 = p_im.p[yf][xi].c[d];
+        p22 = p_im.p[yf][xf].c[d];
+        res.c[d] = ByteClamp((int)(dy2 * (dx2 * p11 + dx1 * p12) + dy1 * (dx2 * p21 + dx1 * p22) + 0.5f));
     }
     res = IMTcalcS (res);
 
@@ -273,7 +312,7 @@ GCIparams GCIcalcallparams(GCIparams params)
     int h, w;
     GCIcoord cmin1, cmax1, cmean1, cd1;
     GCIcoord cmin2, cmax2, cmean2, cd2;
-    float areai, areac, aream;
+    float areai, areac, aream, margin;
 
     params.rect1.p[1].x = params.rect1.p[0].x;
     params.rect1.p[1].y = params.rect1.p[2].y;
@@ -341,6 +380,11 @@ GCIparams GCIcalcallparams(GCIparams params)
     }
     cmean2.x *= 0.25f;
     cmean2.y *= 0.25f;
+    margin = (float)params.margin * params.mi;
+    cmin2.x -= margin;
+    cmin2.y -= margin;
+    cmax2.x += margin;
+    cmax2.y += margin;
     cd2.x = cmax2.x - cmin2.x;
     cd2.y = cmax2.y - cmin2.y;
     params.rect2.min = cmin2;
@@ -377,13 +421,16 @@ IMTimage IMTFilterGeoConform (IMTimage p_im, IMTimage d_im, GCIparams params)
             cf.y -= params.rect1.min.y;
             cf.x *= params.m;
             cf.y *= params.m;
+            cf.x -= 0.5f;
+            cf.y -= 0.5f;
             if (cf.x < 0 || cf.y < 0 || cf.x >= params.size1.height || cf.y >= params.size1.width)
             {
                 d_im.p[i][j] = IMTset(0, 0, 0, 0);
             }
             else
             {
-                d_im.p[i][j] = IMTinterpolation(p_im, cf);
+//                d_im.p[i][j] = IMTInterpolateBiLine(p_im, cf);
+                d_im.p[i][j] = IMTInterpolateBiCubic(p_im, cf);
             }
         }
     }

@@ -10,7 +10,7 @@ Q_EXPORT_PLUGIN2(geoconformal, FilterPlugin);
 
 // ********************** Geo Conformal *********************
 
-GCIparams GeoConformalParams(QImage &img, QString sparams, QString sregion, unsigned iters)
+GCIparams GeoConformalParams(QImage &img, QString sparams, QString sregion, int iters, int margin)
 {
     GCIparams params;
     int imgW = img.width();
@@ -18,6 +18,7 @@ GCIparams GeoConformalParams(QImage &img, QString sparams, QString sregion, unsi
 
     params.complete = 0;
     params.iters = (iters > 1) ? iters : COUNTG;
+    params.margin = (margin > 0) ? margin : COUNTM;
     char* chparams = sparams.toLocal8Bit().data();
     params.trans.na = sscanf(chparams, "%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf;%lf", &params.trans.a[0], &params.trans.a[1], &params.trans.a[2], &params.trans.a[3], &params.trans.a[4], &params.trans.a[5], &params.trans.a[6], &params.trans.a[7], &params.trans.a[8], &params.trans.a[9], &params.trans.a[10], &params.trans.a[11], &params.trans.a[12], &params.trans.a[13], &params.trans.a[14], &params.trans.a[15], &params.trans.a[16], &params.trans.a[17], &params.trans.a[18], &params.trans.a[19]);
     char* chregion = sregion.toLocal8Bit().data();
@@ -76,34 +77,40 @@ GeoConformalDialog:: GeoConformalDialog(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *labelp = new QLabel("Parameters :", this);
+    labelp = new QLabel("Parameters :", this);
     gridLayout->addWidget(labelp, 0, 0, 1, 1);
 
     textp = new QLineEdit(this);
     gridLayout->addWidget(textp, 0, 1, 1, 1);
 
-    QLabel *labelr = new QLabel("Region :", this);
+    labelr = new QLabel("Region :", this);
     gridLayout->addWidget(labelr, 1, 0, 1, 1);
 
     textr = new QLineEdit(this);
     gridLayout->addWidget(textr, 1, 1, 1, 1);
 
-    QLabel *labeli = new QLabel("Iteration :", this);
+    labeli = new QLabel("Iteration :", this);
     gridLayout->addWidget(labeli, 2, 0, 1, 1);
 
     texti = new QLineEdit(this);
     gridLayout->addWidget(texti, 2, 1, 1, 1);
 
+    labelm = new QLabel("Margin :", this);
+    gridLayout->addWidget(labelm, 3, 0, 1, 1);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    textm = new QLineEdit(this);
+    gridLayout->addWidget(textm, 3, 1, 1, 1);
+
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
-    gridLayout->addWidget(buttonBox, 3, 0, 1, 2);
+    gridLayout->addWidget(buttonBox, 4, 0, 1, 2);
 
     textp->setText( sparams);
     textr->setText( sregion);
     texti->setText( siters);
+    textm->setText( smargin);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
@@ -115,7 +122,7 @@ GeoConformalWarningDialog:: GeoConformalWarningDialog(QWidget *parent) : QDialog
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(480, 88);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
     labelnc = new QLabel("New Region = ", this);
     gridLayout->addWidget(labelnc, 0, 0, 1, 1);
@@ -129,7 +136,7 @@ GeoConformalWarningDialog:: GeoConformalWarningDialog(QWidget *parent) : QDialog
     textns = new QLineEdit("", this);
     gridLayout->addWidget(textns, 1, 1, 1, 1);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
 
@@ -151,8 +158,9 @@ void FilterPlugin:: onMenuClick()
         QString sparams = dlg->textp->text();
         QString sregion = dlg->textr->text();
         int iters =  dlg->texti->text().toInt();
+        int margin =  dlg->textm->text().toInt();
 
-        GCIparams params = GeoConformalParams(data->image, sparams, sregion, iters);
+        GCIparams params = GeoConformalParams(data->image, sparams, sregion, iters, margin);
         const char ff = 'f';
 
         GeoConformalWarningDialog *dlgw = new GeoConformalWarningDialog(data->window);
