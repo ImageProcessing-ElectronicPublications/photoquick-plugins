@@ -1,7 +1,12 @@
 #pragma once
 #include "plugin.h"
+#include <cmath>
 #include <QDialog>
 #include <QLabel>
+#include <QGridLayout>
+#include <QHBoxLayout>
+#include <QCheckBox>
+#include <QDialogButtonBox>
 
 class ToolPlugin : public QObject, Plugin
 {
@@ -27,8 +32,12 @@ public:
     uint hist_r[256] = {};
     uint hist_g[256] = {};
     uint hist_b[256] = {};
-    uint hist_y[256] = {};
     //widgets
+    QGridLayout *gridLayout;
+    QWidget *container;
+    QDialogButtonBox *buttonBox;
+    QHBoxLayout *hLayout;
+    QCheckBox *logBtn;
     QLabel *histLabel;
 
     HistogramDialog(QWidget *parent, QImage &image);
