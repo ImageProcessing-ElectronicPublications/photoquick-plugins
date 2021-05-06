@@ -31,8 +31,13 @@ signals:
 class RISDialog : public QDialog
 {
 public:
+    QGridLayout *gridLayout;
+    QLabel *labelMethod;
     QComboBox *comboMethod;
+    QStringList itemsMethod = { "GSample", "HRIS", "Mean"};
+    QLabel *labelMult;
     QSpinBox *spinMult;
+    QDialogButtonBox *buttonBox;
 
     RISDialog(QWidget *parent);
 };

@@ -32,6 +32,10 @@
 #ifndef __LIBRIS_H_
 #define __LIBRIS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -86,4 +90,9 @@ void scaler_hris_3x(uint32_t *src,  uint32_t *dst, int width, int height);
 void scaler_mean_x(uint32_t *src, uint32_t *dst, int width, int height, int scale_factor);
 void scaler_mean_2x(uint32_t *src,  uint32_t *dst, int width, int height);
 void scaler_mean_3x(uint32_t *src,  uint32_t *dst, int width, int height);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif //__LIBRIS_H_//

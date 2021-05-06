@@ -35,7 +35,7 @@ GCIparams GeoConformalParams(QImage &img, QString sparams, QString sregion, int 
 
 void GeoConformal(QImage &img, GCIparams params)
 {
-    int y, x, yr;
+    unsigned y, x, yr;
     IMTimage imgin, imgout;
     if ((params.trans.na < 3) || (params.rect1.n < 4))
         return;

@@ -9,54 +9,44 @@
 
 Q_EXPORT_PLUGIN2(pixart-scaler, FilterPlugin);
 
-void (*scaler_scalex_func[3])(uint*,uint*,int,int) = {
-                scaler_scalex_2x, scaler_scalex_3x, scaler_scalex_4x};
-
-void
-FilterPlugin:: filterScaleX(int n/*factor*/)
+void FilterPlugin:: UpcaleX(int method, int n/*factor*/)
 {
     int w = data->image.width();
     int h = data->image.height();
     void *src = data->image.bits();
     QImage dstImg(n*w, n*h, data->image.format());
     void *dst = dstImg.bits();
-    scaler_scalex_func[n-2]((uint*)src, (uint*)dst, w, h);
+    switch (method)
+    {
+    case 0:
+        scaler_scalex((uint*)src, (uint*)dst, w, h, n);
+        break;
+    case 1:
+        xbr_filter((uint*)src, (uint*)dst, w, h, n);
+        break;
+    default:
+        dstImg = data->image;
+        break;
+    }
     data->image = dstImg;
     emit imageChanged();
 }
 
-void (*xbr_filter_func[3])(uint*,uint*,int,int) = {
-                xbr_filter_xbr2x, xbr_filter_xbr3x, xbr_filter_xbr4x};
-
-void
-FilterPlugin:: filterXBR(int n/*factor*/)
-{
-    int w = data->image.width();
-    int h = data->image.height();
-    void *src = data->image.bits();
-    QImage dstImg(n*w, n*h, data->image.format());
-    void *dst = dstImg.bits();
-    xbr_filter_func[n-2]((uint*)src, (uint*)dst, w, h);
-    data->image = dstImg;
-    emit imageChanged();
-}
-
-// **************** RIS Dialog ******************
+// **************** Upscale Dialog ******************
 UpscaleDialog:: UpscaleDialog(QWidget *parent) : QDialog(parent)
 {
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *labelMethod = new QLabel("Method :", this);
+    labelMethod = new QLabel("Method :", this);
     gridLayout->addWidget(labelMethod, 0, 0, 1, 1);
     comboMethod = new QComboBox(this);
-    QStringList items = { "ScaleX", "xBr"};
-    comboMethod->addItems(items);
+    comboMethod->addItems(itemsMethod);
     gridLayout->addWidget(comboMethod, 0, 1, 1, 1);
 
-    QLabel *labelMult = new QLabel("Mult :", this);
+    labelMult = new QLabel("Mult :", this);
     gridLayout->addWidget(labelMult, 1, 0, 1, 1);
     spinMult = new QSpinBox(this);
     spinMult->setAlignment(Qt::AlignCenter);
@@ -64,7 +54,7 @@ UpscaleDialog:: UpscaleDialog(QWidget *parent) : QDialog(parent)
     spinMult->setValue(2);
     gridLayout->addWidget(spinMult, 1, 1, 1, 1);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
 
@@ -84,16 +74,6 @@ void FilterPlugin:: onMenuClick()
     {
         int method = dlg->comboMethod->currentIndex();
         int mult = dlg->spinMult->value();
-        switch (method)
-        {
-        case 0:
-            filterScaleX(mult);
-            break;
-        case 1:
-            filterXBR(mult);
-            break;
-        default:
-            break;
-        }
+        UpcaleX(method, mult);
     }
 }

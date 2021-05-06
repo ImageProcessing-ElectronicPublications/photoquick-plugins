@@ -21,13 +21,6 @@ static const char TRUE  = 1;
 static const char FALSE = 0;
 static const char BYTE_SIZE_RGBA_4BPP = 4; // RGBA 4BPP
 
-void pixel_copy(uint8_t *, uint32_t, uint8_t *, uint32_t,int);
-uint8_t pixel_eql(uint8_t *, uint32_t, uint32_t, int);
-void scale_scale2x(uint8_t *, uint32_t *, int, int, int, int, int);
-void scale_scale3x(uint8_t *, uint32_t *, int, int, int, int, int);
-void scale_scale4x(uint8_t *, uint32_t *, int, int, int, int, int);
-
-
 // Copy a pixel from src to dst
 void pixel_copy(uint8_t * dst, uint32_t dpos, uint8_t * src, uint32_t spos, int bpp)
 {
@@ -35,7 +28,6 @@ void pixel_copy(uint8_t * dst, uint32_t dpos, uint8_t * src, uint32_t spos, int 
     for(i=0; i < bpp; i++)
         dst[dpos + i] = src[spos + i];
 }
-
 
 // Check if two pixels are equal
 // TODO: RGBA Alpha handling, ignore Alpha byte?
@@ -56,14 +48,13 @@ uint8_t pixel_eql(uint8_t * src, uint32_t pos0, uint32_t pos1, int bpp)
 // Return adjacent pixel values for given pixel
 void scale_scale2x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
 {
-    int x0, x2;
-    int y0, y2;
+    int x0, y0, x2, y2;
     uint32_t B, D, E, F, H;
 
-    if (x > 0)     { x0 = x - 1; } else { x0 = 0;     }
-    if (x < w - 1) { x2 = x + 1; } else { x2 = w - 1; }
-    if (y > 0)     { y0 = y - 1; } else { y0 = 0;     }
-    if (y < h - 1) { y2 = y + 1; } else { y2 = h - 1; }
+    x0 = (x > 0) ? (x - 1) : 0;
+    x2 = (x < w - 1) ? (x + 1) : (w - 1);
+    y0 = (y > 0) ? (y - 1) : 0;
+    y2 = (y < h - 1) ? (y + 1) : (h - 1);
 
     x0 *= bpp;
     x  *= bpp;
@@ -90,18 +81,16 @@ void scale_scale2x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h
     }
 }
 
-
 void scale_scale3x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
 {
-    int x0, x2;
-    int y0, y2;
+    int x0, y0, x2, y2;
     uint32_t A, B, C, D, E, F, G, H, I;
     uint8_t  D_B, D_H, F_B, F_H, E_A, E_G, E_C, E_I;
 
-    if (x > 0)     { x0 = x - 1; } else { x0 = 0;     }
-    if (x < w - 1) { x2 = x + 1; } else { x2 = w - 1; }
-    if (y > 0)     { y0 = y - 1; } else { y0 = 0;     }
-    if (y < h - 1) { y2 = y + 1; } else { y2 = h - 1; }
+    x0 = (x > 0) ? (x - 1) : 0;
+    x2 = (x < w - 1) ? (x + 1) : (w - 1);
+    y0 = (y > 0) ? (y - 1) : 0;
+    y2 = (y < h - 1) ? (y + 1) : (h - 1);
 
     x0 *= bpp;
     x  *= bpp;
@@ -166,10 +155,7 @@ void scale_scale3x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h
         ret_pos[0] = ret_pos[1] = ret_pos[2] = ret_pos[3] = E;
         ret_pos[4] = ret_pos[5] = ret_pos[6] = ret_pos[7] = ret_pos[8] = E;
     }
-
 }
-
-
 
 // scaler_scalex_2x
 //
@@ -205,8 +191,6 @@ void scaler_scalex_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
             pixel_copy(dst, pos + bpp, src, return_pos[3], bpp);
         }
 }
-
-
 
 // scaler_scalex_3x
 //
@@ -251,8 +235,6 @@ void scaler_scalex_3x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
         }
 }
 
-
-
 // scaler_scalex_4x
 //
 // 4x is just the 2x scaler run twice
@@ -283,4 +265,20 @@ void scaler_scalex_4x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
     free(p_tempbuf);
 }
 
-
+void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor)
+{
+    switch (scalefactor)
+    {
+    case 2:
+        scaler_scalex_2x(sp, dp, Xres, Yres);
+        break;
+    case 3:
+        scaler_scalex_3x(sp, dp, Xres, Yres);
+        break;
+    case 4:
+        scaler_scalex_4x(sp, dp, Xres, Yres);
+        break;
+    default:
+        break;
+    }
+}

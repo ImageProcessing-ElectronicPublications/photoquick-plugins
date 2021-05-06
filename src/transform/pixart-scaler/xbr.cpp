@@ -33,7 +33,6 @@
 #include <cstdint>
 #include <cstdlib>
 
-
 #define LB_MASK       0x00FEFEFE
 #define RED_BLUE_MASK 0x00FF00FF
 #define GREEN_MASK    0x0000FF00
@@ -71,7 +70,6 @@ uint32_t pixel_diff(uint32_t x, uint32_t y)
            abs((yuv1 & VMASK) - (yuv2 & VMASK));
 }
 
-
 #define ALPHA_BLEND_BASE(a, b, m, s) (  (PART_MASK & (((a) & PART_MASK) + (((((b) & PART_MASK) - ((a) & PART_MASK)) * (m)) >> (s)))) \
                                       | ((PART_MASK & ((((a) >> 8) & PART_MASK) + ((((((b) >> 8) & PART_MASK) - (((a) >> 8) & PART_MASK)) * (m)) >> (s)))) << 8))
 
@@ -80,8 +78,6 @@ uint32_t pixel_diff(uint32_t x, uint32_t y)
 #define ALPHA_BLEND_128_W(a, b) ALPHA_BLEND_BASE(a, b, 1, 1)
 #define ALPHA_BLEND_192_W(a, b) ALPHA_BLEND_BASE(a, b, 3, 2)
 #define ALPHA_BLEND_224_W(a, b) ALPHA_BLEND_BASE(a, b, 7, 3)
-
-
 
 #define df(A, B) pixel_diff(A, B)
 #define eq(A, B) (df(A, B) < 155)
@@ -208,7 +204,7 @@ uint32_t pixel_diff(uint32_t x, uint32_t y)
     }                                                                                               \
 } while (0)
 
-static void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight, int scaleFactor )
+void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight, int scaleFactor )
 {
     int Bpp = 4; // ARGB32 format
 
@@ -318,22 +314,17 @@ static void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight,
     }
 }
 
-
-
 void xbr_filter_xbr2x(uint32_t *src,  uint32_t *dst, int inWidth, int inHeight )
 {
     xbr_filter( src, dst, inWidth, inHeight, 2); // 2x scale factor
 }
-
 
 void xbr_filter_xbr3x(uint32_t *src,  uint32_t *dst, int inWidth, int inHeight)
 {
     xbr_filter( src, dst, inWidth, inHeight, 3); // 3x scale factor
 }
 
-
 void xbr_filter_xbr4x(uint32_t *src,  uint32_t *dst, int inWidth, int inHeight)
 {
     xbr_filter( src, dst, inWidth, inHeight, 4); // 4x scale factor
 }
-

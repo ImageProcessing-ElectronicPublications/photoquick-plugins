@@ -1,8 +1,5 @@
 #include "ris_scaler.h"
-extern "C"
-{
 #include "libris.h"
-}
 
 #define PLUGIN_NAME "RIS Scalers"
 #define PLUGIN_MENU "Transform/RIS"
@@ -52,16 +49,15 @@ RISDialog:: RISDialog(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *labelMethod = new QLabel("Method :", this);
+    labelMethod = new QLabel("Method :", this);
     gridLayout->addWidget(labelMethod, 0, 0, 1, 1);
     comboMethod = new QComboBox(this);
-    QStringList items = { "GSample", "HRIS", "Mean"};
-    comboMethod->addItems(items);
+    comboMethod->addItems(itemsMethod);
     gridLayout->addWidget(comboMethod, 0, 1, 1, 1);
 
-    QLabel *labelMult = new QLabel("Mult :", this);
+    labelMult = new QLabel("Mult :", this);
     gridLayout->addWidget(labelMult, 1, 0, 1, 1);
     spinMult = new QSpinBox(this);
     spinMult->setAlignment(Qt::AlignCenter);
@@ -69,7 +65,7 @@ RISDialog:: RISDialog(QWidget *parent) : QDialog(parent)
     spinMult->setValue(2);
     gridLayout->addWidget(spinMult, 1, 1, 1, 1);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
 
