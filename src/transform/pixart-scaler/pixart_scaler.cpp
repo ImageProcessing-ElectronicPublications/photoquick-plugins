@@ -22,6 +22,9 @@ void FilterPlugin:: UpcaleX(int method, int n/*factor*/)
         scaler_scalex((uint*)src, (uint*)dst, w, h, n);
         break;
     case 1:
+        hqx((uint*)src, (uint*)dst, w, h, n);
+        break;
+    case 2:
         xbr_filter((uint*)src, (uint*)dst, w, h, n);
         break;
     default:

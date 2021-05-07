@@ -30,8 +30,8 @@
  * @see https://github.com/yoyofr/iFBA/blob/master/fba_src/src/intf/video/scalers/xbr.cpp
  */
 
-#include <cstdint>
-#include <cstdlib>
+#include <stdlib.h>
+#include <stdint.h>
 
 #define LB_MASK       0x00FEFEFE
 #define RED_BLUE_MASK 0x00FF00FF

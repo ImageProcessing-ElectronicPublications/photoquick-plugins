@@ -49,7 +49,7 @@ uint8_t pixel_eql(uint8_t * src, uint32_t pos0, uint32_t pos1, int bpp)
 void scale_scale2x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
 {
     int x0, y0, x2, y2;
-    uint32_t B, D, E, F, H;
+    uint32_t pB, pD, pE, pF, pH;
 
     x0 = (x > 0) ? (x - 1) : 0;
     x2 = (x < w - 1) ? (x + 1) : (w - 1);
@@ -63,28 +63,29 @@ void scale_scale2x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h
     y  *= bpp * w;
     y2 *= bpp * w;
 
-    B = x  + y0;
-    D = x0 + y;
-    E = x  + y;
-    F = x2 + y;
-    H = x  + y2;
+    pB = x  + y0;
+    pD = x0 + y;
+    pE = x  + y;
+    pF = x2 + y;
+    pH = x  + y2;
 
-    if ((!pixel_eql(src, B, H, bpp)) && (!pixel_eql(src, D, F, bpp))) {
-
-      if (pixel_eql(src, B, D, bpp)) { ret_pos[0] = D; } else { ret_pos[0] = E; }
-      if (pixel_eql(src, B, F, bpp)) { ret_pos[1] = F; } else { ret_pos[1] = E; }
-      if (pixel_eql(src, H, D, bpp)) { ret_pos[2] = D; } else { ret_pos[2] = E; }
-      if (pixel_eql(src, H, F, bpp)) { ret_pos[3] = F; } else { ret_pos[3] = E; }
+    if ((!pixel_eql(src, pB, pH, bpp)) && (!pixel_eql(src, pD, pF, bpp)))
+    {
+        ret_pos[0] = (pixel_eql(src, pB, pD, bpp)) ? pD : pE;
+        ret_pos[1] = (pixel_eql(src, pB, pF, bpp)) ? pF : pE;
+        ret_pos[2] = (pixel_eql(src, pH, pD, bpp)) ? pD : pE;
+        ret_pos[3] = (pixel_eql(src, pH, pF, bpp)) ? pF : pE;
     }
-    else {
-        ret_pos[0] = ret_pos[1] = ret_pos[2] = ret_pos[3] = E;
+    else
+    {
+        ret_pos[0] = ret_pos[1] = ret_pos[2] = ret_pos[3] = pE;
     }
 }
 
 void scale_scale3x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
 {
     int x0, y0, x2, y2;
-    uint32_t A, B, C, D, E, F, G, H, I;
+    uint32_t pA, pB, pC, pD, pE, pF, pG, pH, pI;
     uint8_t  D_B, D_H, F_B, F_H, E_A, E_G, E_C, E_I;
 
     x0 = (x > 0) ? (x - 1) : 0;
@@ -100,60 +101,43 @@ void scale_scale3x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h
     y2 *= bpp * w;
 
 
-    A = x0 + y0;
-    B = x  + y0;
-    C = x2 + y0;
-    D = x0 + y;
-    E = x  + y;
-    F = x2 + y;
-    G = x0 + y2;
-    H = x  + y2;
-    I = x2 + y2;
+    pA = x0 + y0;
+    pB = x  + y0;
+    pC = x2 + y0;
+    pD = x0 + y;
+    pE = x  + y;
+    pF = x2 + y;
+    pG = x0 + y2;
+    pH = x  + y2;
+    pI = x2 + y2;
 
-    if ((!pixel_eql(src, B, H, bpp)) && (!pixel_eql(src, D, F, bpp))) {
-        D_B = pixel_eql(src, D, B, bpp);
-        D_H = pixel_eql(src, D, H, bpp);
-        F_B = pixel_eql(src, F, B, bpp);
-        F_H = pixel_eql(src, F, H, bpp);
+    if ((!pixel_eql(src, pB, pH, bpp)) && (!pixel_eql(src, pD, pF, bpp)))
+    {
+        D_B = pixel_eql(src, pD, pB, bpp);
+        D_H = pixel_eql(src, pD, pH, bpp);
+        F_B = pixel_eql(src, pF, pB, bpp);
+        F_H = pixel_eql(src, pF, pH, bpp);
 
-        E_A = pixel_eql(src, E, A, bpp);
-        E_G = pixel_eql(src, E, G, bpp);
-        E_C = pixel_eql(src, E, C, bpp);
-        E_I = pixel_eql(src, E, I, bpp);
+        E_A = pixel_eql(src, pE, pA, bpp);
+        E_G = pixel_eql(src, pE, pG, bpp);
+        E_C = pixel_eql(src, pE, pC, bpp);
+        E_I = pixel_eql(src, pE, pI, bpp);
 
-        if (D_B) { ret_pos[0]  = D; } else { ret_pos[0] = E; }
-
-        if ((D_B && (!E_C)) || (F_B && (!E_A)))
-            ret_pos[1] = B;
-        else
-            ret_pos[1] = E;
-
-        if (F_B) { ret_pos[2]  = F; } else { ret_pos[2] = E; }
-
-        if ((D_B && (!E_G)) || (D_H && (!E_A)))
-            ret_pos[3] = D;
-        else
-            ret_pos[3] = E;
-
-        ret_pos[4] = E;
-
-        if ((F_B && (!E_I)) || (F_H && (!E_C)))
-            ret_pos[5] = F;
-        else
-            ret_pos[5] = E;
-
-        if (D_H) { ret_pos[6]  = D; } else { ret_pos[6] = E; }
-
-        if ((D_H && (!E_I)) || (F_H && (!E_G)))
-            ret_pos[7] = H;
-        else
-            ret_pos[7] = E;
-
-        if (F_H) { ret_pos[8]  = F; } else { ret_pos[8] = E; }
+        ret_pos[0] = (D_B) ? pD : pE;
+        ret_pos[1] = ((D_B && (!E_C)) || (F_B && (!E_A))) ? pB : pE;
+        ret_pos[2] = (F_B) ? pF : pE;
+        ret_pos[3] = ((D_B && (!E_G)) || (D_H && (!E_A))) ? pD : pE;
+        ret_pos[4] = pE;
+        ret_pos[5] = ((F_B && (!E_I)) || (F_H && (!E_C))) ? pF : pE;
+        ret_pos[6] = (D_H) ? pD : pE;
+        ret_pos[7] = ((D_H && (!E_I)) || (F_H && (!E_G))) ? pH : pE;
+        ret_pos[8] = (F_H) ? pF : pE;
     }
-    else {
-        ret_pos[0] = ret_pos[1] = ret_pos[2] = ret_pos[3] = E;
-        ret_pos[4] = ret_pos[5] = ret_pos[6] = ret_pos[7] = ret_pos[8] = E;
+    else
+    {
+        ret_pos[0] = ret_pos[1] = ret_pos[2] = pE;
+        ret_pos[3] = ret_pos[4] = ret_pos[5] = pE;
+        ret_pos[6] = ret_pos[7] = ret_pos[8] = pE;
     }
 }
 
@@ -179,7 +163,8 @@ void scaler_scalex_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 
 
     for (y=0; y < Yres; y++)
-        for (x=0; x < Xres; x++) {
+        for (x=0; x < Xres; x++)
+        {
             scale_scale2x(src, &return_pos[0], x, y, Xres, Yres, bpp);
 
             pos = (4 * y * Xres + 2 * x) * bpp;
@@ -213,7 +198,8 @@ void scaler_scalex_3x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
     dst = (uint8_t *) dp;
 
     for (y=0; y < Yres; y++)
-        for (x=0; x < Xres; x++) {
+        for (x=0; x < Xres; x++)
+        {
             scale_scale3x(src, &return_pos[0], x, y, Xres, Yres, bpp);
 
 

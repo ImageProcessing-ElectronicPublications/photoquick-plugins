@@ -1,5 +1,5 @@
 HEADERS = pixart_scaler.h
-SOURCES = pixart_scaler.cpp xbr.cpp scaler_scalex.cpp
+SOURCES = pixart_scaler.cpp scaler_xbr.c scaler_hqx.c scaler_scalex.c
 
 TARGET  = $$qtLibraryTarget(pixart-scaler)
 DESTDIR = ../..

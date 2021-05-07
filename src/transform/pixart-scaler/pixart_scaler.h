@@ -32,7 +32,7 @@ public:
     QGridLayout *gridLayout;
     QLabel *labelMethod;
     QComboBox *comboMethod;
-    QStringList itemsMethod = { "ScaleX", "xBr"};
+    QStringList itemsMethod = { "ScaleX", "HQX", "xBr"};
     QLabel *labelMult;
     QSpinBox *spinMult;
     QDialogButtonBox *buttonBox;
@@ -40,8 +40,19 @@ public:
     UpscaleDialog(QWidget *parent);
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // XBR scaler
-void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight, int scaleFactor);
+    void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight, int scaleFactor);
+
+// HQX scaler
+    void hqx(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
 
 // ScaleX scaler
-void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
+    void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
+
+#ifdef __cplusplus
+}
+#endif
