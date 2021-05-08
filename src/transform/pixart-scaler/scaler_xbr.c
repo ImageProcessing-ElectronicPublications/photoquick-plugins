@@ -30,22 +30,7 @@
  * @see https://github.com/yoyofr/iFBA/blob/master/fba_src/src/intf/video/scalers/xbr.cpp
  */
 
-#include <stdlib.h>
-#include <stdint.h>
-
-#define LB_MASK       0x00FEFEFE
-#define RED_BLUE_MASK 0x00FF00FF
-#define GREEN_MASK    0x0000FF00
-#define PART_MASK     0x00FF00FF
-
-#define YMASK 0xff0000
-#define UMASK 0x00ff00
-#define VMASK 0x0000ff
-
-#define ALPHA(rgb) ((rgb >> 24) & 0xff)
-#define RED(rgb)   ((rgb >> 16) & 0xff)
-#define GREEN(rgb) ((rgb >> 8) & 0xff)
-#define BLUE(rgb)  (rgb & 0xff)
+#include "scaler.h"
 
 // it is actually YCbCr Colorspace in full [0, 255] range
 int rgb2yuv(uint32_t x)
@@ -65,13 +50,13 @@ uint32_t pixel_diff(uint32_t x, uint32_t y)
     uint32_t yuv2 = rgb2yuv(y);
 
     return (abs((x >> 24) - (y >> 24))) +
-           (abs((yuv1 & YMASK) - (yuv2 & YMASK)) >> 16) +
-           (abs((yuv1 & UMASK) - (yuv2 & UMASK)) >>  8) +
-           abs((yuv1 & VMASK) - (yuv2 & VMASK));
+           (abs((yuv1 & MASK_1) - (yuv2 & MASK_1)) >> 16) +
+           (abs((yuv1 & MASK_2) - (yuv2 & MASK_2)) >>  8) +
+           abs((yuv1 & MASK_3) - (yuv2 & MASK_3));
 }
 
-#define ALPHA_BLEND_BASE(a, b, m, s) (  (PART_MASK & (((a) & PART_MASK) + (((((b) & PART_MASK) - ((a) & PART_MASK)) * (m)) >> (s)))) \
-                                      | ((PART_MASK & ((((a) >> 8) & PART_MASK) + ((((((b) >> 8) & PART_MASK) - (((a) >> 8) & PART_MASK)) * (m)) >> (s)))) << 8))
+#define ALPHA_BLEND_BASE(a, b, m, s) (  (MASK_13 & (((a) & MASK_13) + (((((b) & MASK_13) - ((a) & MASK_13)) * (m)) >> (s)))) \
+                                      | ((MASK_13 & ((((a) >> 8) & MASK_13) + ((((((b) >> 8) & MASK_13) - (((a) >> 8) & MASK_13)) * (m)) >> (s)))) << 8))
 
 #define ALPHA_BLEND_32_W(a, b)  ALPHA_BLEND_BASE(a, b, 1, 3)
 #define ALPHA_BLEND_64_W(a, b)  ALPHA_BLEND_BASE(a, b, 1, 2)

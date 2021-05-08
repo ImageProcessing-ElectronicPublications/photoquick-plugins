@@ -16,20 +16,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
  */
 
-#include <stdlib.h>
-#include <stdint.h>
-
-#define MASK_2     0x0000FF00
-#define MASK_13    0x00FF00FF
-#define MASK_RGB   0x00FFFFFF
-#define MASK_ALPHA 0xFF000000
-
-#define Ymask 0x00FF0000
-#define Umask 0x0000FF00
-#define Vmask 0x000000FF
-#define trY   0x00300000
-#define trU   0x00000700
-#define trV   0x00000006
+#include "scaler.h"
 
 static inline uint32_t rgb_to_yuv(uint32_t c)
 {
@@ -48,9 +35,9 @@ static inline uint32_t rgb_to_yuv(uint32_t c)
 /* Test if there is difference in color */
 static inline int yuv_diff(uint32_t yuv1, uint32_t yuv2)
 {
-    return (( abs((yuv1 & Ymask) - (yuv2 & Ymask)) > trY ) ||
-            ( abs((yuv1 & Umask) - (yuv2 & Umask)) > trU ) ||
-            ( abs((yuv1 & Vmask) - (yuv2 & Vmask)) > trV ) );
+    return (( abs((yuv1 & MASK_1) - (yuv2 & MASK_1)) > trY ) ||
+            ( abs((yuv1 & MASK_2) - (yuv2 & MASK_2)) > trU ) ||
+            ( abs((yuv1 & MASK_3) - (yuv2 & MASK_3)) > trV ) );
 }
 
 static inline int Diff(uint32_t c1, uint32_t c2)

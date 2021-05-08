@@ -13,9 +13,7 @@
 //
 // ========================
 
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
+#include "scaler.h"
 
 static const char TRUE  = 1;
 static const char FALSE = 0;

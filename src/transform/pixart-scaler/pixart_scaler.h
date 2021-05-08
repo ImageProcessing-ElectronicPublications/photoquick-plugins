@@ -1,5 +1,4 @@
 #pragma once
-#include "plugin.h"
 #include <QString>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -7,6 +6,8 @@
 #include <QLabel>
 #include <QComboBox>
 #include <QSpinBox>
+#include "scaler.h"
+#include "plugin.h"
 
 class FilterPlugin : public QObject, Plugin
 {
@@ -39,20 +40,3 @@ public:
 
     UpscaleDialog(QWidget *parent);
 };
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// XBR scaler
-    void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight, int scaleFactor);
-
-// HQX scaler
-    void hqx(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
-
-// ScaleX scaler
-    void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
-
-#ifdef __cplusplus
-}
-#endif
