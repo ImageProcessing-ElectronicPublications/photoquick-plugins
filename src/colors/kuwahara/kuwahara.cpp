@@ -2,25 +2,12 @@
 #include <cmath>
 #include <QInputDialog>
 
-#define PLUGIN_NAME_KUWAHARA "Kuwahara Filter"
-#define PLUGIN_NAME_PENCIL "Pencil Sketch"
-#define PLUGIN_MENU_KUWAHARA "Filters/Artistic/Kuwahara Filter"
-#define PLUGIN_MENU_PENCIL "Filters/Artistic/Pencil Sketch"
-#define PLUGIN_VERSION "4.3.3"
-
-#define MIN(a,b) (((a)<(b))?(a):(b))
-#define MAX(a,b) (((a)>(b))?(a):(b))
-
-#define PI 3.141593f
-
-typedef struct {
-    int x;
-    int y;
-    int width;
-    int height;
-}RectInfo;
+#define PLUGIN_NAME "Kuwahara Filter"
+#define PLUGIN_MENU "Filters/Effects/Kuwahara Filter"
+#define PLUGIN_VERSION "1.0"
 
 Q_EXPORT_PLUGIN2(kuwahara, FilterPlugin);
+
 
 // takes 4 pixels and a floating point coordinate, returns bilinear interpolated pixel
 QRgb interpolateBilinear(float x, float y, QRgb p00, QRgb p01, QRgb p10, QRgb p11)
@@ -52,6 +39,14 @@ inline double getPixelLuma(double red, double green, double blue)
 {
   return (0.212656*red + 0.715158*green + 0.072186*blue);
 }
+
+
+typedef struct {
+    int x;
+    int y;
+    int width;
+    int height;
+}RectInfo;
 
 // Expand each size of Image by certain amount of border
 QImage expandBorder(QImage img, int width)
@@ -186,6 +181,8 @@ void convolve1D(QImage &img, float kernel[], int width/*of kernel*/)
 // 1D Gaussian kernel -> g(x)   = 1/{sqrt(2.pi)*sigma} * e^{-(x^2)/(2.sigma^2)}
 // 2D Gaussian kernel -> g(x,y) = 1/(2.pi.sigma^2) * e^{-(x^2 +y^2)/(2.sigma^2)}
 
+#define PI 3.141593f
+
 void gaussianBlur(QImage &img, int radius, float sigma/*standard deviation*/)
 {
     if (sigma==0)  sigma = radius/2.0 ;
@@ -301,148 +298,19 @@ void kuwaharaFilter(QImage &img, int radius)
     } // end row loop
 }
 
-//**********----------- Box Blur -----------*************//
-// also called mean blur
-void boxFilter(QImage &img, int r/*blur radius*/)
+
+QString FilterPlugin:: menuItem()
 {
-    int w = img.width();
-    int h = img.height();
-    int kernel_w = 2*r + 1;
-
-    QImage src_img = expandBorder(img, r);
-    int src_w = src_img.width();
-    QRgb *data_src = (QRgb*) src_img.constScanLine(0);
-    QRgb *data_dst = (QRgb*) img.scanLine(0);
-
-    #pragma omp parallel for
-    for (int y=0; y<h; ++y)
-    {
-        QRgb *row_dst = data_dst + (y*w);
-        QRgb *row_src = data_src + ((y+r)*src_w);
-
-        int sum_r = 0, sum_g = 0, sum_b = 0;
-        for (int x=0; x<kernel_w; x++) {
-            int clr = row_src[x];
-            sum_r += qRed(clr); sum_g += qGreen(clr); sum_b += qBlue(clr);
-        }
-        row_dst[0] = qRgba(sum_r/kernel_w, sum_g/kernel_w, sum_b/kernel_w, qAlpha(row_dst[0]));
-
-        for (int x=1; x<w; x++) {
-            int left = row_src[x-1];
-            int right = row_src[x+r+r];
-            sum_r += qRed(right) - qRed(left);
-            sum_g += qGreen(right) - qGreen(left);
-            sum_b += qBlue(right) - qBlue(left);
-            row_dst[x] = qRgba(sum_r/kernel_w, sum_g/kernel_w, sum_b/kernel_w, qAlpha(row_dst[x]));
-        }
-    }
-    src_img = expandBorder(img, r);
-    data_src = (QRgb*) src_img.constScanLine(0);
-
-    #pragma omp parallel for
-    for (int x=0; x<w; ++x)
-    {
-        int sum_r = 0, sum_g = 0, sum_b = 0;
-
-        for (int y=0; y<kernel_w; y++) {
-            int clr = (data_src + (y*src_w))[x+r];
-            sum_r += qRed(clr); sum_g += qGreen(clr); sum_b += qBlue(clr);
-        }
-        (data_dst)[x] = qRgba(sum_r/kernel_w, sum_g/kernel_w, sum_b/kernel_w,
-                                qAlpha((data_dst)[x]));//first row
-
-        for (int y=1; y<h; y++) {
-            int clr_top = (data_src + ((y-1)*src_w))[x+r];
-            int clr_btm = (data_src + ((y+r+r)*src_w))[x+r];
-            sum_r += qRed(clr_btm) - qRed(clr_top);
-            sum_g += qGreen(clr_btm) - qGreen(clr_top);
-            sum_b += qBlue(clr_btm) - qBlue(clr_top);
-            (data_dst + (y*w))[x] = qRgba(sum_r/kernel_w, sum_g/kernel_w, sum_b/kernel_w,
-                                        qAlpha((data_dst + (y*w))[x]));
-        }
-    }
+    // if you need / in menu name, use % character. Because / is path separator here
+    return QString(PLUGIN_MENU);
 }
 
-//********* ---------- Invert Colors or Negate --------- ********** //
-void invert(QImage &img)
-{
-    #pragma omp parallel for
-    for (int y=0;y<img.height();y++) {
-        QRgb* line;
-        #pragma omp critical
-        { line = ((QRgb*)img.scanLine(y));}
-        for (int x=0;x<img.width();x++) {
-            line[x] = qRgba(255-qRed(line[x]), 255-qGreen(line[x]), 255-qBlue(line[x]), qAlpha(line[x]));
-        }
-    }
-}
-
-//********** --------- Gray Scale Image --------- ********** //
-void grayScale(QImage &img)
-{
-    #pragma omp parallel for
-    for (int y=0;y<img.height();y++) {
-        QRgb* line;
-        #pragma omp critical
-        { line = ((QRgb*)img.scanLine(y));}
-        for (int x=0;x<img.width();x++) {
-            int val = qGray(line[x]);
-            line[x] = qRgba(val,val,val, qAlpha(line[x]));
-        }
-    }
-}
-
-void pencilSketch(QImage &img)
-{
-    grayScale(img);
-    QImage topImg = img.copy();
-    invert(topImg);
-    boxFilter(topImg, img.width()/20);
-
-    #pragma omp parallel for
-    for (int y=0;y<img.height();y++) {
-        QRgb *line, *top_line;
-        #pragma omp critical
-        { line = ((QRgb*)img.scanLine(y));
-          top_line = ((QRgb*)topImg.scanLine(y));}
-        for (int x=0;x<img.width();x++) {
-            int back = qRed(line[x]);
-            int top = qRed(top_line[x]);
-            if (back==255 || top==0) continue;
-            // blend topImg and img using color dodge blend
-            // i.e divide the top layer by inverted bottom layer
-            int val = MIN(255, (top<<8)/(255-back));
-            line[x] = qRgba(val,val,val, qAlpha(line[x]));
-        }
-    }
-}
-
-QStringList FilterPlugin:: menuItems()
-{
-    return QStringList({PLUGIN_MENU_KUWAHARA, PLUGIN_MENU_PENCIL});
-}
-
-void FilterPlugin:: handleAction(QAction *action, int)
-{
-    if (action->text() == QString(PLUGIN_NAME_KUWAHARA))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterKuwahara()));
-    else if (action->text() == QString(PLUGIN_NAME_PENCIL))
-        connect(action, SIGNAL(triggered()), this, SLOT(filterPencilSketch()));
-    // here you can also set key shortcut to QAction
-}
-
-void FilterPlugin:: filterKuwahara()
+void FilterPlugin:: onMenuClick()
 {
     bool ok;
     int radius = QInputDialog::getInt(data->window, "Blur Radius", "Enter Blur Radius :",
                                         3/*val*/, 1/*min*/, 50/*max*/, 1/*step*/, &ok);
     if (not ok) return;
     kuwaharaFilter(data->image, radius);
-    emit imageChanged();
-}
-
-void FilterPlugin:: filterPencilSketch()
-{
-    pencilSketch(data->image);
     emit imageChanged();
 }

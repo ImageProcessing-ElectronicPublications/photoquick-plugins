@@ -7,13 +7,10 @@ class FilterPlugin : public QObject, Plugin
     Q_INTERFACES(Plugin)
 
 public:
-    QStringList menuItems();
-
-    void handleAction(QAction *action, int action_type);
+    QString menuItem();
 
 public slots:
-    void filterKuwahara();
-    void filterPencilSketch();
+    void onMenuClick();
 
 signals:
     void imageChanged();
