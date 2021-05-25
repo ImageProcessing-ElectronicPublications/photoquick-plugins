@@ -1,7 +1,4 @@
 #include "threshold_bg_scale.h"
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QGridLayout>
 
 #define PLUGIN_NAME "Threshold BG Scale"
 #define PLUGIN_MENU "Filters/Threshold/Threshold BG Scale"
@@ -31,7 +28,7 @@ void thresholdBgScale(QImage &img, int thresh, int scaledW)
             g -= qGreen(line[x]);
             b = qBlue(lineScaled[x]);
             b -= qBlue(line[x]);
-			a = qAlpha(line[x]);
+            a = qAlpha(line[x]);
             r = (r > thresh) ? 0 : 255;
             g = (g > thresh) ? 0 : 255;
             b = (b > thresh) ? 0 : 255;
@@ -46,18 +43,18 @@ PluginDialog:: PluginDialog(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *label = new QLabel("Threshold (delta) :", this);
-    gridLayout->addWidget(label, 0, 0, 1, 1);
+    thresholdLabel = new QLabel("Threshold (delta) :", this);
+    gridLayout->addWidget(thresholdLabel, 0, 0, 1, 1);
 
     thresholdSpin = new QSpinBox(this);
     thresholdSpin->setAlignment(Qt::AlignCenter);
     thresholdSpin->setRange(-127, 127);
     gridLayout->addWidget(thresholdSpin, 0, 1, 1, 1);
 
-    QLabel *label_2 = new QLabel("Downscale Size :", this);
-    gridLayout->addWidget(label_2, 1, 0, 1, 1);
+    downscaledSizeLabel = new QLabel("Downscale Size :", this);
+    gridLayout->addWidget(downscaledSizeLabel, 1, 0, 1, 1);
 
     downscaledSizeSpin = new QSpinBox(this);
     downscaledSizeSpin->setAlignment(Qt::AlignCenter);
@@ -65,7 +62,7 @@ PluginDialog:: PluginDialog(QWidget *parent) : QDialog(parent)
     downscaledSizeSpin->setValue(8);
     gridLayout->addWidget(downscaledSizeSpin, 1, 1, 1, 1);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
 

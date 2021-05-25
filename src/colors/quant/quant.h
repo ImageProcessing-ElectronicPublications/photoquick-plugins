@@ -1,8 +1,10 @@
 #pragma once
 #include "plugin.h"
 #include <QDialog>
+#include <QGridLayout>
+#include <QLabel>
 #include <QSpinBox>
-#include <QCheckBox>
+#include <QDialogButtonBox>
 
 class FilterPlugin : public QObject, Plugin
 {
@@ -25,9 +27,10 @@ signals:
 class QuantDialog : public QDialog
 {
 public:
-    QSpinBox *redSpin;
-    QSpinBox *greenSpin;
-    QSpinBox *blueSpin;
+    QGridLayout *gridLayout;
+    QLabel *redLabel, *greenLabel, *blueLabel;
+    QSpinBox *redSpin, *greenSpin, *blueSpin;
+    QDialogButtonBox *buttonBox;
 
     QuantDialog(QWidget *parent);
 };

@@ -32,10 +32,9 @@ class RISDialog : public QDialog
 {
 public:
     QGridLayout *gridLayout;
-    QLabel *labelMethod;
+    QLabel *labelMethod, *labelMult;
     QComboBox *comboMethod;
     QStringList itemsMethod = { "GSample", "HRIS", "Mean"};
-    QLabel *labelMult;
     QSpinBox *spinMult;
     QDialogButtonBox *buttonBox;
 

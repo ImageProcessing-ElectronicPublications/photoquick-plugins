@@ -1,7 +1,10 @@
 #pragma once
 #include "plugin.h"
 #include <QDialog>
+#include <QGridLayout>
+#include <QLabel>
 #include <QSpinBox>
+#include <QDialogButtonBox>
 
 class FilterPlugin : public QObject, Plugin
 {
@@ -23,8 +26,10 @@ signals:
 class PluginDialog : public QDialog
 {
 public:
-    QSpinBox *thresholdSpin;
-    QSpinBox *downscaledSizeSpin;
+    QGridLayout *gridLayout;
+    QLabel *thresholdLabel, *downscaledSizeLabel;
+    QSpinBox *thresholdSpin, *downscaledSizeSpin;
+    QDialogButtonBox *buttonBox;
 
     PluginDialog(QWidget *parent);
 };

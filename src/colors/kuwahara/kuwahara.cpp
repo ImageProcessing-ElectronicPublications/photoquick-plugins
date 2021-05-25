@@ -8,7 +8,6 @@
 
 Q_EXPORT_PLUGIN2(kuwahara, FilterPlugin);
 
-
 // takes 4 pixels and a floating point coordinate, returns bilinear interpolated pixel
 QRgb interpolateBilinear(float x, float y, QRgb p00, QRgb p01, QRgb p10, QRgb p11)
 {

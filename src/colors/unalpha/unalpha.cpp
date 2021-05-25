@@ -8,8 +8,6 @@
 Q_EXPORT_PLUGIN2(unalpha, FilterPlugin);
 
 // ********************** Unalpha *********************
-// clamp an integer in 0-255 range
-#define Clamp(a) ( (a)&(~0xff) ? (uchar)((~a)>>31) : (a) )
 
 void unalpha(QImage &img)
 {

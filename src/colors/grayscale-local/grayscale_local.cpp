@@ -6,9 +6,6 @@
 */
 #include "grayscale_local.h"
 #include <QDebug>
-#include <QGridLayout>
-#include <QLabel>
-#include <QDialogButtonBox>
 
 #define PLUGIN_NAME "GrayScale (Local)"
 #define PLUGIN_VERSION "1.0"
@@ -51,10 +48,10 @@ GrayScaleDialog:: GrayScaleDialog(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 184);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *label = new QLabel("Radius :", this);
-    gridLayout->addWidget(label, 0, 0, 1, 1);
+    radiusLabel = new QLabel("Radius :", this);
+    gridLayout->addWidget(radiusLabel, 0, 0, 1, 1);
 
     radiusSpin = new QSpinBox(this);
     radiusSpin->setAlignment(Qt::AlignCenter);
@@ -62,8 +59,8 @@ GrayScaleDialog:: GrayScaleDialog(QWidget *parent) : QDialog(parent)
     radiusSpin->setValue(300);
     gridLayout->addWidget(radiusSpin, 0, 1, 1, 1);
 
-    QLabel *label_2 = new QLabel("Samples :", this);
-    gridLayout->addWidget(label_2, 1, 0, 1, 1);
+    samplesLabel = new QLabel("Samples :", this);
+    gridLayout->addWidget(samplesLabel, 1, 0, 1, 1);
 
     samplesSpin = new QSpinBox(this);
     samplesSpin->setAlignment(Qt::AlignCenter);
@@ -71,8 +68,8 @@ GrayScaleDialog:: GrayScaleDialog(QWidget *parent) : QDialog(parent)
     samplesSpin->setValue(4);
     gridLayout->addWidget(samplesSpin, 1, 1, 1, 1);
 
-    QLabel *label_3 = new QLabel("Iterations :", this);
-    gridLayout->addWidget(label_3, 2, 0, 1, 1);
+    iterationsLabel = new QLabel("Iterations :", this);
+    gridLayout->addWidget(iterationsLabel, 2, 0, 1, 1);
 
     iterationsSpin = new QSpinBox(this);
     iterationsSpin->setAlignment(Qt::AlignCenter);
@@ -91,9 +88,9 @@ GrayScaleDialog:: GrayScaleDialog(QWidget *parent) : QDialog(parent)
     samplesSpin->setToolTip(SAMPLES_DESC);
     iterationsSpin->setToolTip(ITERATIONS_DESC);
     enhanceShadowsBtn->setToolTip(ENHANCE_SHADOWS_DESC);
-    label->setToolTip(RADIUS_DESC);
-    label_2->setToolTip(SAMPLES_DESC);
-    label_3->setToolTip(ITERATIONS_DESC);
+    radiusLabel->setToolTip(RADIUS_DESC);
+    samplesLabel->setToolTip(SAMPLES_DESC);
+    iterationsLabel->setToolTip(ITERATIONS_DESC);
 
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));

@@ -1,6 +1,6 @@
 #pragma once
-#include <math.h>
 #include "plugin.h"
+#include <cmath>
 #include <QDialog>
 #include <QGridLayout>
 #include <QDialogButtonBox>
@@ -28,7 +28,7 @@ signals:
 class DeskewDialog : public QDialog
 {
 public:
-	QGridLayout *gridLayout;
+    QGridLayout *gridLayout;
     QLabel *thresLabel;
     QSpinBox *thresSpin;
     QDialogButtonBox *buttonBox;
@@ -39,7 +39,7 @@ public:
 class DeskewDialogWarning : public QDialog
 {
 public:
-	QGridLayout *gridLayout;
+    QGridLayout *gridLayout;
     QLabel *angleLabel;
     QLineEdit *angleText;
     QDialogButtonBox *buttonBox;

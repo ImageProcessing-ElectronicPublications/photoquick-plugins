@@ -1,7 +1,10 @@
 #pragma once
 #include "plugin.h"
 #include <QDialog>
+#include <QGridLayout>
+#include <QLabel>
 #include <QSpinBox>
+#include <QDialogButtonBox>
 
 class FilterPlugin : public QObject, Plugin
 {
@@ -24,8 +27,10 @@ signals:
 class DalgDialog : public QDialog
 {
 public:
-    QSpinBox *countSpin;
-    QSpinBox *deltaSpin;
+    QGridLayout *gridLayout;
+    QLabel *labelcount, *labeldelta;
+    QSpinBox *countSpin, *deltaSpin;
+    QDialogButtonBox *buttonBox;
 
     DalgDialog(QWidget *parent);
 };

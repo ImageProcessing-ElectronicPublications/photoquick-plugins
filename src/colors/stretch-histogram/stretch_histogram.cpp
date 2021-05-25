@@ -69,7 +69,6 @@ void stretchHistogram(QImage &img)
 }
 
 // ************** ----------  Plugin Class -----------************* //
-
 QString FilterPlugin:: menuItem()
 {
     return QString(PLUGIN_MENU);

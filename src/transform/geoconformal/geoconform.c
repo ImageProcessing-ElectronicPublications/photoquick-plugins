@@ -413,7 +413,7 @@ IMTimage IMTFilterGeoConform (IMTimage p_im, IMTimage d_im, GCIparams params)
         {
             ct.y = params.rect2.min.y + (0.5f + j) * params.mi;
             cf = params.rect1.mean;
-            for (k = 0; k < params.iters; k++)
+            for (k = 0; k < (unsigned)params.iters; k++)
             {
                 cf = GCIconformaltransnewton(params.trans, cf, ct);
             }

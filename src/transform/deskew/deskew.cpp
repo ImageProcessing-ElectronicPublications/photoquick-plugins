@@ -7,12 +7,6 @@
 // first parameter is name of plugin, usually same as the library file name
 Q_EXPORT_PLUGIN2(deskew, FilterPlugin);
 
-// ********************** Bimodal Threshold *********************
-// clamp an integer in 0-255 range
-#define Clamp(a) ((a)&(~0xff) ? (uchar)((~a)>>31) : (a))
-#define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define MIN(a,b) (((a) < (b)) ? (a) : (b))
-
 // ----------------------------------------------------------
 
 unsigned int PageTools_Next_Pow2(unsigned int n)
@@ -23,7 +17,7 @@ unsigned int PageTools_Next_Pow2(unsigned int n)
     return retval;
 }
 
-void PageTools_Radon(QImage p_im, int thres, int sign, unsigned int sharpness[])
+void PageTools_Radon(QImage &p_im, int thres, int sign, unsigned int sharpness[])
 {
     unsigned int h, w, w2, s, step, m;
     unsigned int ir, ic, ics, i, j, acc, diff;
@@ -110,7 +104,7 @@ void PageTools_Radon(QImage p_im, int thres, int sign, unsigned int sharpness[])
 
 // ----------------------------------------------------------
 
-float PageTools_FindSkew(QImage p_im, int thres)
+float PageTools_FindSkew(QImage &p_im, int thres)
 {
     unsigned int h, w, w2, ssize, s;
     unsigned int i, imax = 0, vmax=0;
@@ -171,7 +165,7 @@ int SelectChannelPixel(QRgb pix, int channel)
     }
     return value;
 }
-QRgb InterpolateBiCubic (QImage img, float y, float x)
+QRgb InterpolateBiCubic (QImage &img, float y, float x)
 {
     int height, width, i, d, dn, xi, yi, xf, yf;
     float d0, d2, d3, a0, a1, a2, a3;

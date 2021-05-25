@@ -1,8 +1,10 @@
 #pragma once
 #include "plugin.h"
 #include <QDialog>
+#include <QGridLayout>
+#include <QLabel>
 #include <QDoubleSpinBox>
-
+#include <QDialogButtonBox>
 
 class FilterPlugin : public QObject, Plugin
 {
@@ -21,12 +23,13 @@ signals:
     void sendNotification(QString title, QString message);
 };
 
-
 class Mantiuk06Dialog : public QDialog
 {
 public:
-    QDoubleSpinBox *contrastSpin;
-    QDoubleSpinBox *saturationSpin;
+    QGridLayout *gridLayout;
+    QLabel *contrastLabel, *saturationLabel;
+    QDoubleSpinBox *contrastSpin, *saturationSpin;
+    QDialogButtonBox *buttonBox;
 
     Mantiuk06Dialog(QWidget *parent);
 };

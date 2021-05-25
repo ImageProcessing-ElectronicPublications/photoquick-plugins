@@ -48,8 +48,7 @@ public:
     QLabel *labelnc, *labelns;
     QLineEdit *textnc, *textns;
     QDialogButtonBox *buttonBox;
-    QString snc;
-    QString sns;
+    QString snc, sns;
 
     GeoConformalWarningDialog(QWidget *parent);
 };

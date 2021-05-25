@@ -28,10 +28,9 @@ void FilterPlugin:: UpcaleX(int method, int n/*factor*/)
         xbr_filter((uint*)src, (uint*)dst, w, h, n);
         break;
     default:
-        dstImg = data->image;
-        break;
+        return;
     }
-    data->image = dstImg;
+    data->image = dstImg.copy();
     emit imageChanged();
 }
 

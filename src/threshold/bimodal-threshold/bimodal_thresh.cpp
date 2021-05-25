@@ -1,7 +1,4 @@
 #include "bimodal_thresh.h"
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QGridLayout>
 
 #define PLUGIN_NAME "Bimodal Threshold"
 #define PLUGIN_MENU "Filters/Threshold/Threshold Bimod"
@@ -11,9 +8,6 @@
 Q_EXPORT_PLUGIN2(bimodal_thresh, FilterPlugin);
 
 // ********************** Bimodal Threshold *********************
-// clamp an integer in 0-255 range
-#define Clamp(a) ( (a)&(~0xff) ? (uchar)((~a)>>31) : (a) )
-
 int histogram_darkest(long long hist[])
 {
     for (int i=0; i<256; i++)
@@ -164,18 +158,18 @@ BimodThreshDialog:: BimodThreshDialog(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *label = new QLabel("Colors Count :", this);
-    gridLayout->addWidget(label, 0, 0, 1, 1);
+    countLabel = new QLabel("Colors Count :", this);
+    gridLayout->addWidget(countLabel, 0, 0, 1, 1);
 
     countSpin = new QSpinBox(this);
     countSpin->setAlignment(Qt::AlignCenter);
     countSpin->setRange(2, 255);
     gridLayout->addWidget(countSpin, 0, 1, 1, 1);
 
-    QLabel *label_2 = new QLabel("Delta :", this);
-    gridLayout->addWidget(label_2, 1, 0, 1, 1);
+    deltaLabel = new QLabel("Delta :", this);
+    gridLayout->addWidget(deltaLabel, 1, 0, 1, 1);
 
     deltaSpin = new QSpinBox(this);
     deltaSpin->setAlignment(Qt::AlignCenter);
@@ -186,7 +180,7 @@ BimodThreshDialog:: BimodThreshDialog(QWidget *parent) : QDialog(parent)
     medianBtn = new QCheckBox("Use Median", this);
     gridLayout->addWidget(medianBtn, 2, 0, 1, 1);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, 3, 0, 1, 2);
 

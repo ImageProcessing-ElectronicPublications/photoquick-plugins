@@ -68,7 +68,7 @@ void GeoConformal(QImage &img, GCIparams params)
             row[x] = qRgba( imgout.p[yr][x].c[0], imgout.p[yr][x].c[1], imgout.p[yr][x].c[2], imgout.p[yr][x].c[3]);
         }
     }
-    img = dstImg;
+    img = dstImg.copy();
 }
 
 // **************** Geo Conformal Dialog ******************

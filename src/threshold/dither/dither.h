@@ -1,8 +1,10 @@
 #pragma once
 #include "plugin.h"
 #include <QDialog>
+#include <QGridLayout>
+#include <QLabel>
 #include <QSpinBox>
-#include <QCheckBox>
+#include <QDialogButtonBox>
 
 class FilterPlugin : public QObject, Plugin
 {
@@ -25,9 +27,10 @@ signals:
 class DitherDialog : public QDialog
 {
 public:
-    QSpinBox *countSpin;
-    QSpinBox *deltaSpin;
-    QSpinBox *kpgSpin;
+    QGridLayout *gridLayout;
+    QLabel *labelcount, *labeldelta, *labelmult;
+    QSpinBox *countSpin, *deltaSpin, *kpgSpin;
+    QDialogButtonBox *buttonBox;
 
     DitherDialog(QWidget *parent);
 };

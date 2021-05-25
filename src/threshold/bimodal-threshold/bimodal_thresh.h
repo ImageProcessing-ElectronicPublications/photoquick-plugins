@@ -1,8 +1,11 @@
 #pragma once
 #include "plugin.h"
 #include <QDialog>
+#include <QGridLayout>
+#include <QLabel>
 #include <QSpinBox>
 #include <QCheckBox>
+#include <QDialogButtonBox>
 
 class FilterPlugin : public QObject, Plugin
 {
@@ -25,9 +28,11 @@ signals:
 class BimodThreshDialog : public QDialog
 {
 public:
-    QSpinBox *countSpin;
-    QSpinBox *deltaSpin;
+    QGridLayout *gridLayout;
+    QLabel *countLabel, *deltaLabel;
+    QSpinBox *countSpin, *deltaSpin;
     QCheckBox *medianBtn;
+    QDialogButtonBox *buttonBox;
 
     BimodThreshDialog(QWidget *parent);
 };

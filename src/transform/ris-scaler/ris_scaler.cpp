@@ -15,7 +15,7 @@ void FilterPlugin:: filterHRISX(int n/*factor*/)
     QImage dstImg(n*w, n*h, data->image.format());
     void *dst = dstImg.bits();
     scaler_hris((uint*)src, (uint*)dst, w, h, n);
-    data->image = dstImg;
+    data->image = dstImg.copy();
     emit imageChanged();
 }
 
@@ -27,7 +27,7 @@ void FilterPlugin:: filterGSampleX(int n/*factor*/)
     QImage dstImg(n*w, n*h, data->image.format());
     void *dst = dstImg.bits();
     gsample((uint*)src, (uint*)dst, w, h, n);
-    data->image = dstImg;
+    data->image = dstImg.copy();
     emit imageChanged();
 }
 
@@ -39,7 +39,7 @@ void FilterPlugin:: filterMeanX(int n/*factor*/)
     QImage dstImg((w+n-1)/n, (h+n-1)/n, data->image.format());
     void *dst = dstImg.bits();
     scaler_mean_x((uint*)src, (uint*)dst, w, h, n);
-    data->image = dstImg;
+    data->image = dstImg.copy();
     emit imageChanged();
 }
 

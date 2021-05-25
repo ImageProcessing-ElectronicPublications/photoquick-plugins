@@ -31,10 +31,9 @@ class UpscaleDialog : public QDialog
 {
 public:
     QGridLayout *gridLayout;
-    QLabel *labelMethod;
+    QLabel *labelMethod, *labelMult;
     QComboBox *comboMethod;
     QStringList itemsMethod = { "ScaleX", "HQX", "xBr"};
-    QLabel *labelMult;
     QSpinBox *spinMult;
     QDialogButtonBox *buttonBox;
 

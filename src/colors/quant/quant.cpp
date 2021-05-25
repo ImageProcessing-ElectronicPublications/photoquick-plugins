@@ -1,7 +1,4 @@
 #include "quant.h"
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QGridLayout>
 
 #define PLUGIN_NAME "Quant"
 #define PLUGIN_MENU "Filters/Color/Quant"
@@ -11,8 +8,6 @@
 Q_EXPORT_PLUGIN2(quant, FilterPlugin);
 
 // ********************** Quant Simple *********************
-// clamp an integer in 0-255 range
-#define Clamp(a) ( (a)&(~0xff) ? (uchar)((~a)>>31) : (a) )
 
 void Quant(QImage &img, int red, int green, int blue)
 {
@@ -52,9 +47,9 @@ QuantDialog:: QuantDialog(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *redLabel = new QLabel("Red :", this);
+    redLabel = new QLabel("Red :", this);
     gridLayout->addWidget(redLabel, 0, 0, 1, 1);
     redSpin = new QSpinBox(this);
     redSpin->setAlignment(Qt::AlignCenter);
@@ -62,7 +57,7 @@ QuantDialog:: QuantDialog(QWidget *parent) : QDialog(parent)
     redSpin->setValue(8);
     gridLayout->addWidget(redSpin, 0, 1, 1, 1);
 
-    QLabel *greenLabel = new QLabel("Green :", this);
+    greenLabel = new QLabel("Green :", this);
     gridLayout->addWidget(greenLabel, 1, 0, 1, 1);
     greenSpin = new QSpinBox(this);
     greenSpin->setAlignment(Qt::AlignCenter);
@@ -70,7 +65,7 @@ QuantDialog:: QuantDialog(QWidget *parent) : QDialog(parent)
     greenSpin->setValue(8);
     gridLayout->addWidget(greenSpin, 1, 1, 1, 1);
 
-    QLabel *blueLabel = new QLabel("Blue :", this);
+    blueLabel = new QLabel("Blue :", this);
     gridLayout->addWidget(blueLabel, 2, 0, 1, 1);
     blueSpin = new QSpinBox(this);
     blueSpin->setAlignment(Qt::AlignCenter);
@@ -78,8 +73,7 @@ QuantDialog:: QuantDialog(QWidget *parent) : QDialog(parent)
     blueSpin->setValue(8);
     gridLayout->addWidget(blueSpin, 2, 1, 1, 1);
 
-
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, 3, 0, 1, 2);
 

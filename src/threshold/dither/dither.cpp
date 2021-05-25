@@ -1,7 +1,4 @@
 #include "dither.h"
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QGridLayout>
 
 #define PLUGIN_NAME "Dither"
 #define PLUGIN_MENU "Filters/Threshold/Dither"
@@ -9,9 +6,6 @@
 
 // first parameter is name of plugin, usually same as the library file name
 Q_EXPORT_PLUGIN2(dither_thresh, FilterPlugin);
-
-// clamp an integer in 0-255 range
-#define Clamp(a) ( (a)&(~0xff) ? (uchar)((~a)>>31) : (a) )
 
 // **** Dither of D.E.Knuth "Computer Typesetting" ****
 void dither(QImage &img, unsigned tcount, int tdelta, int kpg)
@@ -174,10 +168,10 @@ void dither(QImage &img, unsigned tcount, int tdelta, int kpg)
             }
             for (i = 0; i < tcount; i++)
             {
+                ix = ix0 + i;
                 for (j = 0; j < tcount; j++)
                 {
                     iy = iy0 + j;
-                    ix = ix0 + i;
                     if (iy < imgH && ix < imgW)
                     {
                         QRgb *row = (QRgb*)img.constScanLine(iy);
@@ -195,9 +189,9 @@ DitherDialog:: DitherDialog(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *labelcount = new QLabel("Pattern :", this);
+    labelcount = new QLabel("Pattern :", this);
     gridLayout->addWidget(labelcount, 0, 0, 1, 1);
 
     countSpin = new QSpinBox(this);
@@ -205,7 +199,7 @@ DitherDialog:: DitherDialog(QWidget *parent) : QDialog(parent)
     countSpin->setRange(2, 4);
     gridLayout->addWidget(countSpin, 0, 1, 1, 1);
 
-    QLabel *labeldelta = new QLabel("Delta :", this);
+    labeldelta = new QLabel("Delta :", this);
     gridLayout->addWidget(labeldelta, 1, 0, 1, 1);
 
     deltaSpin = new QSpinBox(this);
@@ -214,7 +208,7 @@ DitherDialog:: DitherDialog(QWidget *parent) : QDialog(parent)
     deltaSpin->setValue(0);
     gridLayout->addWidget(deltaSpin, 1, 1, 1, 1);
 
-    QLabel *labelmult = new QLabel("Multiply :", this);
+    labelmult = new QLabel("Multiply :", this);
     gridLayout->addWidget(labelmult, 2, 0, 1, 1);
 
     kpgSpin = new QSpinBox(this);
@@ -223,7 +217,7 @@ DitherDialog:: DitherDialog(QWidget *parent) : QDialog(parent)
     kpgSpin->setValue(2);
     gridLayout->addWidget(kpgSpin, 2, 1, 1, 1);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, 3, 0, 1, 2);
 

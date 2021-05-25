@@ -1,7 +1,4 @@
 #include "dalg.h"
-#include <QLabel>
-#include <QDialogButtonBox>
-#include <QGridLayout>
 
 #define PLUGIN_NAME "Dalg"
 #define PLUGIN_MENU "Filters/Threshold/Dalg"
@@ -9,9 +6,6 @@
 
 // first parameter is name of plugin, usually same as the library file name
 Q_EXPORT_PLUGIN2(dalg_thresh, FilterPlugin);
-
-// clamp an integer in 0-255 range
-#define Clamp(a) ( (a)&(~0xff) ? (uchar)((~a)>>31) : (a) )
 
 // **** D-algoritm dither ****
 void dalg(QImage &img, unsigned tcount, int tdelta)
@@ -104,9 +98,9 @@ DalgDialog:: DalgDialog(QWidget *parent) : QDialog(parent)
     this->setWindowTitle(PLUGIN_NAME);
     this->resize(320, 158);
 
-    QGridLayout *gridLayout = new QGridLayout(this);
+    gridLayout = new QGridLayout(this);
 
-    QLabel *labelcount = new QLabel("Pattern :", this);
+    labelcount = new QLabel("Pattern :", this);
     gridLayout->addWidget(labelcount, 0, 0, 1, 1);
 
     countSpin = new QSpinBox(this);
@@ -115,7 +109,7 @@ DalgDialog:: DalgDialog(QWidget *parent) : QDialog(parent)
     countSpin->setValue(4);
     gridLayout->addWidget(countSpin, 0, 1, 1, 1);
 
-    QLabel *labeldelta = new QLabel("Delta :", this);
+    labeldelta = new QLabel("Delta :", this);
     gridLayout->addWidget(labeldelta, 1, 0, 1, 1);
 
     deltaSpin = new QSpinBox(this);
@@ -124,7 +118,7 @@ DalgDialog:: DalgDialog(QWidget *parent) : QDialog(parent)
     deltaSpin->setValue(0);
     gridLayout->addWidget(deltaSpin, 1, 1, 1, 1);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
+    buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
     buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
     gridLayout->addWidget(buttonBox, 2, 0, 1, 2);
 
