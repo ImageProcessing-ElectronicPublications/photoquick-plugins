@@ -6,6 +6,9 @@
 #include <QImage>
 #include <QWidget>
 
+#ifndef __PHOTOQUIK_PLUGIN
+#define __PHOTOQUIK_PLUGIN
+
 // clamp an integer in 0-255 range
 #define Clamp(a) ((a)&(~0xff) ? (uchar)((~a)>>31) : (a))
 
@@ -70,3 +73,5 @@ signals:
 
 
 Q_DECLARE_INTERFACE(Plugin, "photoquick.Plugin");
+
+#endif /* __PHOTOQUIK_PLUGIN */

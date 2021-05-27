@@ -1,4 +1,6 @@
 #pragma once
+#include <cmath>
+#include <QInputDialog>
 #include "plugin.h"
 
 class FilterPlugin : public QObject, Plugin

@@ -2,13 +2,6 @@
     Copyright (C) 2021 Arindam Chaudhuri <ksharindam@gmail.com>
 */
 #include "photo_frame.h"
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QPainter>
-#include <QMouseEvent>// for QDragEnterEvent and QDropEvent
-#include <QUrl>
-#include <cmath>
-
 
 #define PLUGIN_NAME "Photo Frame"
 #define PLUGIN_MENU "Decorate/Add Photo Frame"
@@ -32,8 +25,8 @@ FrameDialog:: FrameDialog(QWidget *parent, QImage img, int win_w, int win_h) : Q
     layout->addWidget(canvas);
     // timer for updating margins
     timer = new QTimer(this);
-	timer->setSingleShot(true);
-	timer->setInterval(500);
+    timer->setSingleShot(true);
+    timer->setInterval(500);
     // connect all signals
     connect(timer, SIGNAL(timeout()), this, SLOT(updateMargins()));
     connect(canvas, SIGNAL(fileDropped(QString)), this, SLOT(setFrame(QString)));

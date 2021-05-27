@@ -1,5 +1,4 @@
 #pragma once
-#include "plugin.h"
 #include <QString>
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -7,6 +6,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QSpinBox>
+#include "plugin.h"
 
 class FilterPlugin : public QObject, Plugin
 {

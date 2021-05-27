@@ -1,11 +1,12 @@
 #pragma once
-#include "plugin.h"
+#include <QDebug>
 #include <QDialog>
 #include <QGridLayout>
 #include <QLabel>
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QDialogButtonBox>
+#include "plugin.h"
 
 class FilterPlugin : public QObject, Plugin
 {

@@ -1,5 +1,4 @@
 #pragma once
-#include "plugin.h"
 #include <cmath>
 #include <QDialog>
 #include <QLabel>
@@ -7,6 +6,7 @@
 #include <QHBoxLayout>
 #include <QCheckBox>
 #include <QDialogButtonBox>
+#include "plugin.h"
 
 class ToolPlugin : public QObject, Plugin
 {

@@ -336,14 +336,14 @@ void FilterPlugin:: onMenuClick()
 //        Deskew(data->image, thres);
 
         angle = PageTools_FindSkew(data->image, thres);
-		DeskewDialogWarning *dlgw = new DeskewDialogWarning(data->window);
-		dlgw->angleText->setText(QString("%1").arg(angle));
-		if (dlgw->exec()==QDialog::Accepted)
-		{
-			angle =  dlgw->angleText->text().toFloat();
-			rotated = FilterRotate(data->image, angle);
-			data->image = rotated.copy();
-		}
+        DeskewDialogWarning *dlgw = new DeskewDialogWarning(data->window);
+        dlgw->angleText->setText(QString("%1").arg(angle));
+        if (dlgw->exec()==QDialog::Accepted)
+        {
+            angle =  dlgw->angleText->text().toFloat();
+            rotated = FilterRotate(data->image, angle);
+            data->image = rotated.copy();
+        }
         emit imageChanged();
     }
 }

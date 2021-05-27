@@ -11,31 +11,31 @@ Q_EXPORT_PLUGIN2(quant, FilterPlugin);
 
 void Quant(QImage &img, int red, int green, int blue)
 {
-	int y, x, clr;
-	int r, g, b;
+    int y, x, clr;
+    int r, g, b;
     int imgW = img.width();
     int imgH = img.height();
-	red = (red < 2) ? 2 : red;
-	green = (green < 2) ? 2 : green;
-	blue = (blue < 2) ? 2 : blue;
+    red = (red < 2) ? 2 : red;
+    green = (green < 2) ? 2 : green;
+    blue = (blue < 2) ? 2 : blue;
     for (y = 0; y < imgH; y++)
     {
         QRgb *row = (QRgb*)img.constScanLine(y);
         for (x = 0; x < imgW; x++)
-		{
+        {
             clr = row[x];
             r = qRed(clr);
             g = qGreen(clr);
             b = qBlue(clr);
-			r = (int)((float)r * red * 0.00390625);
-			g = (int)((float)g * green * 0.00390625);
-			b = (int)((float)b * blue * 0.00390625);
-			r = (int)((float)r * 255.0 / (float)(red - 1.0));
-			g = (int)((float)g * 255.0 / (float)(green - 1.0));
-			b = (int)((float)b * 255.0 / (float)(blue - 1.0));
-			r = Clamp(r);
-			g = Clamp(g);
-			b = Clamp(b);
+            r = (int)((float)r * red * 0.00390625);
+            g = (int)((float)g * green * 0.00390625);
+            b = (int)((float)b * blue * 0.00390625);
+            r = (int)((float)r * 255.0 / (float)(red - 1.0));
+            g = (int)((float)g * 255.0 / (float)(green - 1.0));
+            b = (int)((float)b * 255.0 / (float)(blue - 1.0));
+            r = Clamp(r);
+            g = Clamp(g);
+            b = Clamp(b);
             row[x] = qRgba(r, g, b, qAlpha(clr));
         }
     }

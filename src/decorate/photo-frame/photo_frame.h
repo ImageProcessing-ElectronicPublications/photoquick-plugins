@@ -1,9 +1,15 @@
 /*  This file is a part of PhotoQuick Plugins project, and is GNU GPLv3 licensed
     Copyright (C) 2021 Arindam Chaudhuri <ksharindam@gmail.com>
 */
+#include <cmath>
+#include <QTimer>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QPainter>
+#include <QMouseEvent>// for QDragEnterEvent and QDropEvent
+#include <QUrl>
 #include "plugin.h"
 #include "ui_frame_dialog.h"
-#include <QTimer>
 
 class ToolPlugin : public QObject, Plugin
 {

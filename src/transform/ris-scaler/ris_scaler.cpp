@@ -1,5 +1,4 @@
 #include "ris_scaler.h"
-#include "libris.h"
 
 #define PLUGIN_NAME "RIS Scalers"
 #define PLUGIN_MENU "Transform/RIS"

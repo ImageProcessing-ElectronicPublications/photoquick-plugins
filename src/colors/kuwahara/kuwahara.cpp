@@ -1,6 +1,4 @@
 #include "kuwahara.h"
-#include <cmath>
-#include <QInputDialog>
 
 #define PLUGIN_NAME "Kuwahara Filter"
 #define PLUGIN_MENU "Filters/Effects/Kuwahara Filter"

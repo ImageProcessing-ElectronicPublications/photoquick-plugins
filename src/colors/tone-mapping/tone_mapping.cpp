@@ -2,7 +2,6 @@
     Copyright (C) 2020 Arindam Chaudhuri <ksharindam@gmail.com>
 */
 #include "tone_mapping.h"
-#include <QDebug>
 
 #define PLUGIN_NAME "Tone Mapping"
 #define PLUGIN_VERSION "1.0"

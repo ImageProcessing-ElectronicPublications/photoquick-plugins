@@ -5,7 +5,6 @@
     to perform local color-difference preserving grayscale generation.
 */
 #include "grayscale_local.h"
-#include <QDebug>
 
 #define PLUGIN_NAME "GrayScale (Local)"
 #define PLUGIN_VERSION "1.0"
