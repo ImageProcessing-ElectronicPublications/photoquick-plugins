@@ -1,7 +1,7 @@
 #include "threshold_bg_scale.h"
 
-#define PLUGIN_NAME "Threshold BG Scale"
-#define PLUGIN_MENU "Filters/Threshold/Threshold BG Scale"
+#define PLUGIN_NAME "BG Scale Threshold"
+#define PLUGIN_MENU "Filters/Threshold/BG Scale"
 #define PLUGIN_VERSION "1.0"
 
 Q_EXPORT_PLUGIN2(threshold-bg-scale, FilterPlugin);

@@ -1,2 +1,2 @@
 TEMPLATE = subdirs
-SUBDIRS = grayscale-local invert kuwahara stretch-histogram tone-mapping unalpha quant
+SUBDIRS = grayscale-local invert kuwahara stretch-histogram tone-mapping unalpha

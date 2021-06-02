@@ -1,7 +1,7 @@
 #include "quant.h"
 
 #define PLUGIN_NAME "Quant"
-#define PLUGIN_MENU "Filters/Color/Quant"
+#define PLUGIN_MENU "Filters/Threshold/Quant"
 #define PLUGIN_VERSION "1.0"
 
 // first parameter is name of plugin, usually same as the library file name
