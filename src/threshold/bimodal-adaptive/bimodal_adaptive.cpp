@@ -283,8 +283,8 @@ AdaptBimodThreshDialog:: AdaptBimodThreshDialog(QWidget *parent) : QDialog(paren
 
     deltaSpin = new QSpinBox(this);
     deltaSpin->setAlignment(Qt::AlignCenter);
-    deltaSpin->setRange(1, 254);
-    deltaSpin->setValue(32);
+    deltaSpin->setRange(1, 255);
+    deltaSpin->setValue(40);
     gridLayout->addWidget(deltaSpin, 1, 1, 1, 1);
 
     buttonBox = new QDialogButtonBox(Qt::Horizontal, this);
@@ -307,7 +307,7 @@ void FilterPlugin:: onMenuClick()
     {
         int window_size = dlg->windowSpin->value();
         int delta = dlg->deltaSpin->value();
-        float T = (float)delta / 255.0f;
+        float T = (float)delta / 256.0f;
         thresholdAdaptBimod(data->image, T, window_size);
         emit imageChanged();
     }
