@@ -1,8 +1,8 @@
 #include "deskew.h"
 
-#define PLUGIN_NAME "Deskew"
-#define PLUGIN_MENU "Transform/Deskew"
-#define PLUGIN_VERSION "4.4.2"
+#define PLUGIN_NAME "DeSkew"
+#define PLUGIN_MENU "Transform/Geometry/DeSkew"
+#define PLUGIN_VERSION "4.4.3"
 
 // first parameter is name of plugin, usually same as the library file name
 Q_EXPORT_PLUGIN2(deskew, FilterPlugin);

@@ -13,7 +13,7 @@ void toneMapping_mantiuk06(QImage &img, float contrast=0.1, float saturation=0.8
 QString
 FilterPlugin:: menuItem()
 {
-    return QString("Filters/HDR Effect");
+    return QString("Filters/Effects/HDR Effect");
 }
 
 void

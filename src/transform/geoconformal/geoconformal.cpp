@@ -2,7 +2,7 @@
 #include "geoconformal.h"
 
 #define PLUGIN_NAME "GeoConformal"
-#define PLUGIN_MENU "Transform/GeoConformal"
+#define PLUGIN_MENU "Transform/Geometry/GeoConformal"
 #define PLUGIN_VERSION "0.20210416"
 
 // first parameter is name of plugin, usually same as the library file name
