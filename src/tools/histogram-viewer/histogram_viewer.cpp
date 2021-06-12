@@ -7,7 +7,9 @@
 #define PLUGIN_MENU "Info/Histogram Viewer"
 #define PLUGIN_VERSION "1.0"
 
-Q_EXPORT_PLUGIN2(histogram-viewer, ToolPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(histogram-viewer, ToolPlugin);
+#endif
 
 //********* ---------- Histogram Viewer --------- ********** //
 

@@ -6,7 +6,7 @@
 
 # Auto-genereated files
 Makefile
-moc_*.cpp
+.qmake.stash
 build/
 
 TODO

@@ -4,8 +4,9 @@
 #define PLUGIN_MENU "Filters/Threshold/Dalg"
 #define PLUGIN_VERSION "1.0"
 
-// first parameter is name of plugin, usually same as the library file name
-Q_EXPORT_PLUGIN2(dalg_thresh, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(dalg_thresh, FilterPlugin);
+#endif
 
 // **** D-algoritm dither ****
 void dalg(QImage &img, unsigned tcount, int tdelta)

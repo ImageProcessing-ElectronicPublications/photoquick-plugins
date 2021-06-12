@@ -7,7 +7,9 @@
 #define PLUGIN_MENU "Filters/Color/Histogram Equalize"
 #define PLUGIN_VERSION "1.0"
 
-Q_EXPORT_PLUGIN2(stretch-histogram, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(stretch-histogram, FilterPlugin);
+#endif
 
 //*********** ------------ Stretch Histogram ----------- ************ //
 /* This filter gives same effect as GIMP Colors->Auto->Equalize

@@ -4,8 +4,9 @@
 #define PLUGIN_MENU "Filters/Threshold/Dither"
 #define PLUGIN_VERSION "1.0"
 
-// first parameter is name of plugin, usually same as the library file name
-Q_EXPORT_PLUGIN2(dither_thresh, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(dither_thresh, FilterPlugin);
+#endif
 
 // **** Dither of D.E.Knuth "Computer Typesetting" ****
 void dither(QImage &img, unsigned tcount, int tdelta, int kpg)

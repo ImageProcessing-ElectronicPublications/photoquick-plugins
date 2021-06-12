@@ -4,7 +4,9 @@
 #define PLUGIN_MENU "Filters/Threshold/BG Scale"
 #define PLUGIN_VERSION "1.0"
 
-Q_EXPORT_PLUGIN2(threshold-bg-scale, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(threshold-bg-scale, FilterPlugin);
+#endif
 
 //***** ------ Threshold by difference from Blurred Background ----- ***** //
 void thresholdBgScale(QImage &img, int thresh, int scaledW)

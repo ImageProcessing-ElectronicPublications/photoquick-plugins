@@ -4,7 +4,9 @@
 #define PLUGIN_MENU "Transform/RIS"
 #define PLUGIN_VERSION "1.0"
 
-Q_EXPORT_PLUGIN2(ris-scaler, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(ris-scaler, FilterPlugin);
+#endif
 
 void FilterPlugin:: filterHRISX(int n/*factor*/)
 {

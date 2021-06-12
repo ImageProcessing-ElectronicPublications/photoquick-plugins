@@ -4,7 +4,9 @@
 #define PLUGIN_MENU "Filters/Effects/Kuwahara Filter"
 #define PLUGIN_VERSION "1.0"
 
-Q_EXPORT_PLUGIN2(kuwahara, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(kuwahara, FilterPlugin);
+#endif
 
 // takes 4 pixels and a floating point coordinate, returns bilinear interpolated pixel
 QRgb interpolateBilinear(float x, float y, QRgb p00, QRgb p01, QRgb p10, QRgb p11)

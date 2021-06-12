@@ -4,8 +4,9 @@
 #define PLUGIN_MENU "Filters/Threshold/Bimodal"
 #define PLUGIN_VERSION "1.1"
 
-// first parameter is name of plugin, usually same as the library file name
-Q_EXPORT_PLUGIN2(bimodal_thresh, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(bimodal_thresh, FilterPlugin);
+#endif
 
 // ********************** Bimodal Threshold *********************
 int histogram_darkest(long long hist[])

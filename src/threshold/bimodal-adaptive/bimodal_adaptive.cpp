@@ -4,8 +4,9 @@
 #define PLUGIN_MENU "Filters/Threshold/Bimodal adaptive"
 #define PLUGIN_VERSION "4.4.3"
 
-// first parameter is name of plugin, usually same as the library file name
-Q_EXPORT_PLUGIN2(adaptive_bimodal, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(adaptive_bimodal, FilterPlugin);
+#endif
 
 int SelectChannelPixel(QRgb pix, int channel)
 {

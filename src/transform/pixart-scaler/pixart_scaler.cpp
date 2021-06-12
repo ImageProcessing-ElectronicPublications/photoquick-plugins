@@ -7,7 +7,9 @@
 #define PLUGIN_MENU "Transform/Upscale Icon"
 #define PLUGIN_VERSION "1.2"
 
-Q_EXPORT_PLUGIN2(pixart-scaler, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(pixart-scaler, FilterPlugin);
+#endif
 
 void FilterPlugin:: UpcaleX(int method, int n/*factor*/)
 {

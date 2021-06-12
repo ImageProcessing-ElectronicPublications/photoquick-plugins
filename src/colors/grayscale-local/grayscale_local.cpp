@@ -9,7 +9,9 @@
 #define PLUGIN_NAME "GrayScale (Local)"
 #define PLUGIN_VERSION "1.0"
 
-Q_EXPORT_PLUGIN2(grayscale-local, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(grayscale-local, FilterPlugin);
+#endif
 
 QImage color2gray(QImage &image, int radius, int samples, int iterations, bool enhance_shadows);
 

@@ -15,11 +15,11 @@ A set of plugins for the viewer [photoquick](https://github.com/ImageProcessing-
 * libgomp1
 
 ### Build 
-
+It can be built with either Qt4 or Qt5  
 #### Linux
 Install dependencies...  
 **Build dependencies ...**  
- * libqt4-dev  
+ * libqt4-dev or qtbase5-dev  
 
 To build this program, extract the source code zip.  
 Open terminal and change directory to src/  

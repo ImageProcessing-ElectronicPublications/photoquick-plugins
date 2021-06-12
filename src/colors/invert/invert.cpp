@@ -4,8 +4,9 @@
 #define PLUGIN_MENU "Filters/Color/Invert%Negative"
 #define PLUGIN_VERSION "4.3.3"
 
-// first parameter is name of plugin, usually same as the library file name
-Q_EXPORT_PLUGIN2(invert, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(invert, FilterPlugin);
+#endif
 
 //********* ---------- Invert Colors or Negate --------- ********** //
 void invert(QImage &img)

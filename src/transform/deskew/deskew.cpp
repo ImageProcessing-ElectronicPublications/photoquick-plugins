@@ -4,8 +4,9 @@
 #define PLUGIN_MENU "Transform/Geometry/DeSkew"
 #define PLUGIN_VERSION "4.4.3"
 
-// first parameter is name of plugin, usually same as the library file name
-Q_EXPORT_PLUGIN2(deskew, FilterPlugin);
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+    Q_EXPORT_PLUGIN2(deskew, FilterPlugin);
+#endif
 
 // ----------------------------------------------------------
 
