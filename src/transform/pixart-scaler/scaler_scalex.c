@@ -43,6 +43,25 @@ uint8_t pixel_eql(uint8_t * src, uint32_t pos0, uint32_t pos1, int bpp)
     return TRUE;
 }
 
+uint32_t pixel_eqfuzz(uint8_t * src, uint32_t pos0, uint32_t pos1, uint32_t pos2, uint32_t pos3, int bpp)
+{
+    int i, d0, d1;
+    uint32_t pos;
+
+    d0 = 0;
+    d1 = 0;
+    for(i = 0; i < bpp; i++)
+    {
+        d0 += (src[pos0 + i] > src[pos1 + i]) ? (src[pos0 + i] - src[pos1 + i]) : (src[pos1 + i] - src[pos0 + i]);
+        d0 += (src[pos0 + i] > src[pos2 + i]) ? (src[pos0 + i] - src[pos2 + i]) : (src[pos2 + i] - src[pos0 + i]);
+        d1 += (src[pos3 + i] > src[pos1 + i]) ? (src[pos3 + i] - src[pos1 + i]) : (src[pos1 + i] - src[pos3 + i]);
+        d1 += (src[pos3 + i] > src[pos2 + i]) ? (src[pos3 + i] - src[pos2 + i]) : (src[pos2 + i] - src[pos3 + i]);
+    }
+    d0 /= 3;
+    pos = (d0 < d1) ? pos0 : pos3;
+    return pos;
+}
+
 // Return adjacent pixel values for given pixel
 void scale_scale2x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
 {
@@ -261,6 +280,207 @@ void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalef
         break;
     case 4:
         scaler_scalex_4x(sp, dp, Xres, Yres);
+        break;
+    default:
+        break;
+    }
+}
+
+void scale_eagle2x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
+{
+    int x0, y0, x2, y2;
+    uint32_t pA, pB, pC, pD, pE, pF, pG, pH, pI;
+
+    x0 = (x > 0) ? (x - 1) : 0;
+    x2 = (x < w - 1) ? (x + 1) : (w - 1);
+    y0 = (y > 0) ? (y - 1) : 0;
+    y2 = (y < h - 1) ? (y + 1) : (h - 1);
+
+    x0 *= bpp;
+    x  *= bpp;
+    x2 *= bpp;
+    y0 *= bpp * w;
+    y  *= bpp * w;
+    y2 *= bpp * w;
+
+
+    pA = x0 + y0;
+    pB = x  + y0;
+    pC = x2 + y0;
+    pD = x0 + y;
+    pE = x  + y;
+    pF = x2 + y;
+    pG = x0 + y2;
+    pH = x  + y2;
+    pI = x2 + y2;
+
+    ret_pos[0] = pixel_eqfuzz(src, pE, pB, pD, pA, bpp);
+    ret_pos[1] = pixel_eqfuzz(src, pE, pB, pF, pC, bpp);
+    ret_pos[2] = pixel_eqfuzz(src, pE, pD, pH, pG, bpp);
+    ret_pos[3] = pixel_eqfuzz(src, pE, pF, pH, pI, bpp);
+}
+
+void scale_eagle3x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
+{
+    int x0, y0, x2, y2;
+    uint32_t pA, pB, pC, pD, pE, pF, pG, pH, pI;
+
+    x0 = (x > 0) ? (x - 1) : 0;
+    x2 = (x < w - 1) ? (x + 1) : (w - 1);
+    y0 = (y > 0) ? (y - 1) : 0;
+    y2 = (y < h - 1) ? (y + 1) : (h - 1);
+
+    x0 *= bpp;
+    x  *= bpp;
+    x2 *= bpp;
+    y0 *= bpp * w;
+    y  *= bpp * w;
+    y2 *= bpp * w;
+
+
+    pA = x0 + y0;
+    pB = x  + y0;
+    pC = x2 + y0;
+    pD = x0 + y;
+    pE = x  + y;
+    pF = x2 + y;
+    pG = x0 + y2;
+    pH = x  + y2;
+    pI = x2 + y2;
+
+    ret_pos[0] = pixel_eqfuzz(src, pE, pB, pD, pA, bpp);
+    ret_pos[1] = pixel_eqfuzz(src, pE, pD, pF, pB, bpp);
+    ret_pos[2] = pixel_eqfuzz(src, pE, pB, pF, pC, bpp);
+    ret_pos[3] = pixel_eqfuzz(src, pE, pB, pH, pD, bpp);
+    ret_pos[4] = pE;
+    ret_pos[5] = pixel_eqfuzz(src, pE, pB, pH, pF, bpp);
+    ret_pos[6] = pixel_eqfuzz(src, pE, pD, pH, pG, bpp);
+    ret_pos[7] = pixel_eqfuzz(src, pE, pD, pF, pH, bpp);
+    ret_pos[8] = pixel_eqfuzz(src, pE, pF, pH, pI, bpp);
+}
+
+// scaler_eagle_2x
+//
+// Scales image in *sp up by 2x into *dp
+//
+// *sp : pointer to source uint32 buffer of Xres * Yres, 4BPP RGBA
+// *dp : pointer to output uint32 buffer of 2 * Xres * 2 * Yres, 4BPP RGBA
+// Xres, Yres: resolution of source image
+//
+void scaler_eagle_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
+{
+    int       bpp;
+    int       x, y;
+    uint32_t  pos;
+    uint32_t  return_pos[4];
+    uint8_t * src, * dst;
+
+    bpp = BYTE_SIZE_RGBA_4BPP;  // Assume 4BPP RGBA
+    src = (uint8_t *) sp;
+    dst = (uint8_t *) dp;
+
+
+    for (y=0; y < Yres; y++)
+        for (x=0; x < Xres; x++)
+        {
+            scale_eagle2x(src, &return_pos[0], x, y, Xres, Yres, bpp);
+
+            pos = (4 * y * Xres + 2 * x) * bpp;
+            pixel_copy(dst, pos,       src, return_pos[0], bpp);
+            pixel_copy(dst, pos + bpp, src, return_pos[1], bpp);
+
+            pos += 2 * Xres * bpp;
+            pixel_copy(dst, pos,       src, return_pos[2], bpp);
+            pixel_copy(dst, pos + bpp, src, return_pos[3], bpp);
+        }
+}
+
+// scaler_eagle_3x
+//
+// Scales image in *sp up by 3x into *dp
+//
+// *sp : pointer to source uint32 buffer of Xres * Yres, 4BPP RGBA
+// *dp : pointer to output uint32 buffer of 3 * Xres * 3 * Yres, 4BPP RGBA
+// Xres, Yres: resolution of source image
+//
+void scaler_eagle_3x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
+{
+    int       bpp;
+    int       x, y;
+    uint32_t  pos;
+    uint32_t  return_pos[9];
+    uint8_t * src, * dst;
+
+    bpp = BYTE_SIZE_RGBA_4BPP;  // Assume 4BPP RGBA
+    src = (uint8_t *) sp;
+    dst = (uint8_t *) dp;
+
+    for (y=0; y < Yres; y++)
+        for (x=0; x < Xres; x++)
+        {
+            scale_eagle3x(src, &return_pos[0], x, y, Xres, Yres, bpp);
+
+
+            pos = (9 * y * Xres + 3 * x) * bpp;
+            pixel_copy(dst, pos,           src, return_pos[0], bpp);
+            pixel_copy(dst, pos + bpp,     src, return_pos[1], bpp);
+            pixel_copy(dst, pos + 2 * bpp, src, return_pos[2], bpp);
+
+            pos += 3 * Xres * bpp;
+            pixel_copy(dst, pos,           src, return_pos[3], bpp);
+            pixel_copy(dst, pos + bpp,     src, return_pos[4], bpp);
+            pixel_copy(dst, pos + 2 * bpp, src, return_pos[5], bpp);
+
+            pos += 3 * Xres * bpp;
+            pixel_copy(dst, pos,           src, return_pos[6], bpp);
+            pixel_copy(dst, pos + bpp,     src, return_pos[7], bpp);
+            pixel_copy(dst, pos + 2 * bpp, src, return_pos[8], bpp);
+
+        }
+}
+
+// scaler_eagle_4x
+//
+// 4x is just the 2x scaler run twice
+// Scales image in *sp up by 4x into *dp
+//
+// *sp : pointer to source uint32 buffer of Xres * Yres, 4BPP RGBA
+// *dp : pointer to output uint32 buffer of 4 * Xres * 4 * Yres, 4BPP RGBA
+// Xres, Yres: resolution of source image
+//
+void scaler_eagle_4x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
+{
+    long       buffer_size_bytes_2x;
+    uint32_t * p_tempbuf;
+
+    // Apply the first 2x scaling
+    scaler_eagle_2x(sp, dp, Xres, Yres);
+
+    // Copy the 2x scaled image into a temp buffer
+    // then scale it up 2x again
+    buffer_size_bytes_2x = Xres * 2 * Yres * 2 * BYTE_SIZE_RGBA_4BPP;
+    p_tempbuf = (uint32_t*) malloc(buffer_size_bytes_2x);
+
+    memcpy(p_tempbuf, dp, buffer_size_bytes_2x);
+
+    // Apply the second 2x scaling
+    scaler_eagle_2x(p_tempbuf, dp, Xres * 2, Yres * 2);
+
+    free(p_tempbuf);
+}
+
+void scaler_eagle(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor)
+{
+    switch (scalefactor)
+    {
+    case 2:
+        scaler_eagle_2x(sp, dp, Xres, Yres);
+        break;
+    case 3:
+        scaler_eagle_3x(sp, dp, Xres, Yres);
+        break;
+    case 4:
+        scaler_eagle_4x(sp, dp, Xres, Yres);
         break;
     default:
         break;

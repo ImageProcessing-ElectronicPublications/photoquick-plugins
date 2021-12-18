@@ -36,7 +36,7 @@ public:
     QGridLayout *gridLayout;
     QLabel *labelMethod, *labelMult;
     QComboBox *comboMethod;
-    QStringList itemsMethod = { "ScaleX", "HQX", "xBr"};
+    QStringList itemsMethod = { "ScaleX", "Eagle", "HQX", "xBr"};
     QSpinBox *spinMult;
     QDialogButtonBox *buttonBox;
 

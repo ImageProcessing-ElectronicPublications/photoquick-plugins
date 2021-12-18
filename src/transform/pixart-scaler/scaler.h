@@ -33,6 +33,9 @@ extern "C" {
 // ScaleX scaler
     void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
 
+// Eagle scaler
+    void scaler_eagle(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
+
 #ifdef __cplusplus
 }
 #endif

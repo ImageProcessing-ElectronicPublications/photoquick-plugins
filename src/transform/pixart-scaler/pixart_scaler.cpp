@@ -5,7 +5,7 @@
 
 #define PLUGIN_NAME "Pixart Scalers"
 #define PLUGIN_MENU "Transform/Upscale Icon"
-#define PLUGIN_VERSION "1.2"
+#define PLUGIN_VERSION "1.3"
 
 #if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
     Q_EXPORT_PLUGIN2(pixart-scaler, FilterPlugin);
@@ -24,9 +24,12 @@ void FilterPlugin:: UpcaleX(int method, int n/*factor*/)
         scaler_scalex((uint*)src, (uint*)dst, w, h, n);
         break;
     case 1:
-        hqx((uint*)src, (uint*)dst, w, h, n);
+        scaler_eagle((uint*)src, (uint*)dst, w, h, n);
         break;
     case 2:
+        hqx((uint*)src, (uint*)dst, w, h, n);
+        break;
+    case 3:
         xbr_filter((uint*)src, (uint*)dst, w, h, n);
         break;
     default:
