@@ -40,7 +40,7 @@ void scaler_hris(uint32_t *sp,  uint32_t *dp, int Xres, int Yres, int scale_mode
 
     deststep = Xres * scale_mode;
 
-    if (scale_mode == SCALE_HRIS_2X)
+    if (scale_mode == SCALER_X2)
     {
         k0[0] = 0.750;
         k0[1] = 0.250;
@@ -281,7 +281,7 @@ void scaler_hris(uint32_t *sp,  uint32_t *dp, int Xres, int Yres, int scale_mode
                 imx = (double)w[24].c[d];
                 b33 -= (k2[2] * imx);
 
-                if (scale_mode == SCALE_HRIS_2X)
+                if (scale_mode == SCALER_X2)
                 {
                     r11 = (k1[0] * b22 + k1[1] * (b12 + b21) + k1[2] * b11);
                     r12 = (k1[0] * b22 + k1[1] * (b12 + b23) + k1[2] * b13);
@@ -345,7 +345,7 @@ void scaler_hris(uint32_t *sp,  uint32_t *dp, int Xres, int Yres, int scale_mode
 //
 void scaler_hris_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 {
-    scaler_hris(sp, dp, Xres, Yres, SCALE_HRIS_2X);
+    scaler_hris(sp, dp, Xres, Yres, SCALER_X2);
 }
 
 
@@ -359,5 +359,5 @@ void scaler_hris_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 //
 void scaler_hris_3x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 {
-    scaler_hris(sp, dp, Xres, Yres, SCALE_HRIS_3X);
+    scaler_hris(sp, dp, Xres, Yres, SCALER_X3);
 }

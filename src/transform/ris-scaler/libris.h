@@ -63,12 +63,16 @@ extern "C" {
 #define TRIM(x,a,b) (MIN(MAX((x), (a)), (b)))
 #endif
 
-#define GSAMPLE_2X  2
-#define GSAMPLE_3X  3
-#define SCALE_HRIS_2X  2
-#define SCALE_HRIS_3X  3
-#define REDUCE_2X  2
-#define REDUCE_3X  3
+enum Scaler {
+    SCALER_GSAMPLE,
+    SCALER_HRIS,
+    SCALER_MEAN
+};
+
+enum SFactor {
+    SCALER_X2 = 2,
+    SCALER_X3 = 3
+};
 
 typedef struct
 {

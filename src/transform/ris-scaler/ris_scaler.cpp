@@ -8,38 +8,36 @@
     Q_EXPORT_PLUGIN2(ris-scaler, FilterPlugin);
 #endif
 
-void FilterPlugin:: filterHRISX(int n/*factor*/)
+void FilterPlugin:: filterScalerX(int n/*factor*/, int scaler)
 {
-    int w = data->image.width();
-    int h = data->image.height();
+    int w, h, w2, h2;
+    w = data->image.width();
+    h = data->image.height();
+    if (scaler == SCALER_MEAN)
+    {
+        w2 = (w + n - 1) / n;
+        h2 = (h + n - 1) / n;
+    }
+    else
+    {
+        w2 = w * n;
+        h2 = h * n;
+    }
     void *src = data->image.bits();
-    QImage dstImg(n*w, n*h, data->image.format());
+    QImage dstImg(w2, h2, data->image.format());
     void *dst = dstImg.bits();
-    scaler_hris((uint*)src, (uint*)dst, w, h, n);
-    data->image = dstImg.copy();
-    emit imageChanged();
-}
-
-void FilterPlugin:: filterGSampleX(int n/*factor*/)
-{
-    int w = data->image.width();
-    int h = data->image.height();
-    void *src = data->image.bits();
-    QImage dstImg(n*w, n*h, data->image.format());
-    void *dst = dstImg.bits();
-    gsample((uint*)src, (uint*)dst, w, h, n);
-    data->image = dstImg.copy();
-    emit imageChanged();
-}
-
-void FilterPlugin:: filterMeanX(int n/*factor*/)
-{
-    int w = data->image.width();
-    int h = data->image.height();
-    void *src = data->image.bits();
-    QImage dstImg((w+n-1)/n, (h+n-1)/n, data->image.format());
-    void *dst = dstImg.bits();
-    scaler_mean_x((uint*)src, (uint*)dst, w, h, n);
+    switch(scaler)
+    {
+        case SCALER_GSAMPLE:
+            scaler_hris((uint*)src, (uint*)dst, w, h, n);
+            break;
+        case SCALER_HRIS:
+            gsample((uint*)src, (uint*)dst, w, h, n);
+            break;
+        case SCALER_MEAN:
+            scaler_mean_x((uint*)src, (uint*)dst, w, h, n);
+            break;
+    }
     data->image = dstImg.copy();
     emit imageChanged();
 }
@@ -86,19 +84,6 @@ void FilterPlugin:: onMenuClick()
     {
         int method = dlg->comboMethod->currentIndex();
         int mult = dlg->spinMult->value();
-        switch (method)
-        {
-        case 0:
-            filterGSampleX(mult);
-            break;
-        case 1:
-            filterHRISX(mult);
-            break;
-        case 2:
-            filterMeanX(mult);
-            break;
-        default:
-            break;
-        }
+        filterScalerX(mult, method);
     }
 }

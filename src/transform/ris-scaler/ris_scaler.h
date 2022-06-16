@@ -19,9 +19,7 @@ class FilterPlugin : public QObject, Plugin
 
 public:
     QString menuItem();
-    void filterHRISX(int n);
-    void filterGSampleX(int n);
-    void filterMeanX(int n);
+    void filterScalerX(int n, int scaler);
 
 public slots:
     void onMenuClick();

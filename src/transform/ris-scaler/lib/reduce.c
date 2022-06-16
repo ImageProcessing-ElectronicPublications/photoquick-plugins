@@ -74,7 +74,7 @@ void scaler_mean_x(uint32_t *sp, uint32_t *dp, int Xres, int Yres, int scale_fac
 //
 void scaler_mean_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 {
-    scaler_mean_x(sp, dp, Xres, Yres, REDUCE_2X);
+    scaler_mean_x(sp, dp, Xres, Yres, SCALER_X2);
 }
 
 // mean_3x
@@ -87,5 +87,5 @@ void scaler_mean_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 //
 void scaler_mean_3x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 {
-    scaler_mean_x(sp, dp, Xres, Yres, REDUCE_3X);
+    scaler_mean_x(sp, dp, Xres, Yres, SCALER_X3);
 }

@@ -155,7 +155,7 @@ void gsample(uint32_t *sp,  uint32_t *dp, int Xres, int Yres, int scale_factor)
 //
 void gsample_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 {
-    gsample(sp, dp, Xres, Yres, GSAMPLE_2X);
+    gsample(sp, dp, Xres, Yres, SCALER_X2);
 }
 
 // gsample_3x
@@ -168,5 +168,5 @@ void gsample_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 //
 void gsample_3x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
 {
-    gsample(sp, dp, Xres, Yres, GSAMPLE_3X);
+    gsample(sp, dp, Xres, Yres, SCALER_X3);
 }
