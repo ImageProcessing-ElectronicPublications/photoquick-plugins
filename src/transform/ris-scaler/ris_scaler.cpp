@@ -28,10 +28,10 @@ void FilterPlugin:: filterScalerX(int n/*factor*/, int scaler)
     void *dst = dstImg.bits();
     switch(scaler)
     {
-        case SCALER_GSAMPLE:
+        case SCALER_HRIS:
             scaler_hris((uint*)src, (uint*)dst, w, h, n);
             break;
-        case SCALER_HRIS:
+        case SCALER_GSAMPLE:
             gsample((uint*)src, (uint*)dst, w, h, n);
             break;
         case SCALER_MEAN:
