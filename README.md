@@ -48,3 +48,7 @@ sudo make install
 
 * https://github.com/ksharindam/photoquick
 * https://github.com/ImageProcessing-ElectronicPublications/photoquick
+
+### Examples
+
+See [examples](https://github.com/ImageProcessing-ElectronicPublications/photoquick-examples).
