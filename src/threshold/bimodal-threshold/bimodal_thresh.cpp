@@ -174,7 +174,7 @@ BimodThreshDialog:: BimodThreshDialog(QWidget *parent) : QDialog(parent)
 
     deltaSpin = new QSpinBox(this);
     deltaSpin->setAlignment(Qt::AlignCenter);
-    deltaSpin->setRange(0,255);
+    deltaSpin->setRange(-127,127);
     deltaSpin->setValue(0);
     gridLayout->addWidget(deltaSpin, 1, 1, 1, 1);
 

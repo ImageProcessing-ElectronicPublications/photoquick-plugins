@@ -43,6 +43,31 @@ uint8_t pixel_eql(uint8_t * src, uint32_t pos0, uint32_t pos1, int bpp)
     return TRUE;
 }
 
+// Check if two pixels are near
+// TODO: RGBA Alpha handling, ignore Alpha byte?
+uint32_t pixel_near(uint8_t * src, uint32_t pos0, uint32_t pos1, uint32_t pos2, int bpp)
+{
+    int i, d0, d1, d2;
+    uint32_t pos;
+
+    d0 = 0;
+    d1 = 0;
+    d2 = 0;
+    for(i = 0; i < bpp; i++)
+    {
+        d0 += (src[pos1 + i] > src[pos2 + i]) ? (src[pos1 + i] - src[pos2 + i]) : (src[pos2 + i] - src[pos1 + i]);
+        d1 += (src[pos0 + i] > src[pos1 + i]) ? (src[pos0 + i] - src[pos1 + i]) : (src[pos1 + i] - src[pos0 + i]);
+        d2 += (src[pos0 + i] > src[pos2 + i]) ? (src[pos0 + i] - src[pos2 + i]) : (src[pos2 + i] - src[pos0 + i]);
+    }
+    if (d2 < d1)
+    {
+        d1 = d2;
+        pos1 = pos2;
+    }
+    pos = (d1 < d0) ? pos0 : pos1;
+    return pos;
+}
+
 uint32_t pixel_eqfuzz(uint8_t * src, uint32_t pos0, uint32_t pos1, uint32_t pos2, uint32_t pos3, int bpp)
 {
     int i, d0, d1;
@@ -280,6 +305,223 @@ void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalef
         break;
     case 4:
         scaler_scalex_4x(sp, dp, Xres, Yres);
+        break;
+    default:
+        break;
+    }
+}
+
+// Return adjacent pixel values for given pixel
+void scale_scalen2x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
+{
+    int x0, y0, x2, y2;
+    uint32_t pB, pD, pE, pF, pH;
+
+    x0 = (x > 0) ? (x - 1) : 0;
+    x2 = (x < w - 1) ? (x + 1) : (w - 1);
+    y0 = (y > 0) ? (y - 1) : 0;
+    y2 = (y < h - 1) ? (y + 1) : (h - 1);
+
+    x0 *= bpp;
+    x  *= bpp;
+    x2 *= bpp;
+    y0 *= bpp * w;
+    y  *= bpp * w;
+    y2 *= bpp * w;
+
+    pB = x  + y0;
+    pD = x0 + y;
+    pE = x  + y;
+    pF = x2 + y;
+    pH = x  + y2;
+
+    ret_pos[0] = ret_pos[1] = ret_pos[2] = ret_pos[3] = pE;
+    if ((pixel_near(src, pE, pB, pH, bpp) == pE) && (pixel_near(src, pE, pD, pF, bpp)  == pE))
+    {
+        ret_pos[0] = pixel_near(src, pE, pB, pD, bpp);
+        ret_pos[1] = pixel_near(src, pE, pB, pF, bpp);
+        ret_pos[2] = pixel_near(src, pE, pH, pD, bpp);
+        ret_pos[3] = pixel_near(src, pE, pH, pF, bpp);
+    }
+}
+void scale_scalen3x(uint8_t * src, uint32_t * ret_pos, int x, int y, int w, int h, int bpp)
+{
+    int x0, y0, x2, y2;
+    uint32_t pA, pB, pC, pD, pE, pF, pG, pH, pI;
+    uint32_t  pBD, pBF, pDH, pFH, pEA, pEC, pEG, pEI;
+
+    x0 = (x > 0) ? (x - 1) : 0;
+    x2 = (x < w - 1) ? (x + 1) : (w - 1);
+    y0 = (y > 0) ? (y - 1) : 0;
+    y2 = (y < h - 1) ? (y + 1) : (h - 1);
+
+    x0 *= bpp;
+    x  *= bpp;
+    x2 *= bpp;
+    y0 *= bpp * w;
+    y  *= bpp * w;
+    y2 *= bpp * w;
+
+
+    pA = x0 + y0;
+    pB = x  + y0;
+    pC = x2 + y0;
+    pD = x0 + y;
+    pE = x  + y;
+    pF = x2 + y;
+    pG = x0 + y2;
+    pH = x  + y2;
+    pI = x2 + y2;
+
+    ret_pos[0] = ret_pos[1] = ret_pos[2] = pE;
+    ret_pos[3] = ret_pos[4] = ret_pos[5] = pE;
+    ret_pos[6] = ret_pos[7] = ret_pos[8] = pE;
+    if ((pixel_near(src, pE, pB, pH, bpp) == pE) && (pixel_near(src, pE, pD, pF, bpp) == pE))
+    {
+        pBD = pixel_near(src, pE, pB, pD, bpp);
+        pBF = pixel_near(src, pE, pB, pF, bpp);
+        pDH = pixel_near(src, pE, pD, pH, bpp);
+        pFH = pixel_near(src, pE, pF, pH, bpp);
+
+        pEA = pixel_near(src, pBD, pE, pA, bpp);
+        pEC = pixel_near(src, pBF, pE, pC, bpp);
+        pEG = pixel_near(src, pDH, pE, pG, bpp);
+        pEI = pixel_near(src, pFH, pE, pI, bpp);
+
+        ret_pos[0] = pBD;
+        ret_pos[1] = pixel_near(src, pE, pEA, pEC, bpp);
+        ret_pos[2] = pBF;
+        ret_pos[3] = pixel_near(src, pE, pEA, pEG, bpp);
+        ret_pos[4] = pE;
+        ret_pos[5] = pixel_near(src, pE, pEC, pEI, bpp);
+        ret_pos[6] = pDH;
+        ret_pos[7] = pixel_near(src, pE, pEG, pEI, bpp);
+        ret_pos[8] = pFH;
+    }
+}
+
+// scaler_scalenx_2x
+//
+// Scales image in *sp up by 2x into *dp
+//
+// *sp : pointer to source uint32 buffer of Xres * Yres, 4BPP RGBA
+// *dp : pointer to output uint32 buffer of 2 * Xres * 2 * Yres, 4BPP RGBA
+// Xres, Yres: resolution of source image
+//
+void scaler_scalenx_2x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
+{
+    int       bpp;
+    int       x, y;
+    uint32_t  pos;
+    uint32_t  return_pos[4];
+    uint8_t * src, * dst;
+
+    bpp = BYTE_SIZE_RGBA_4BPP;  // Assume 4BPP RGBA
+    src = (uint8_t *) sp;
+    dst = (uint8_t *) dp;
+
+
+    for (y=0; y < Yres; y++)
+        for (x=0; x < Xres; x++)
+        {
+            scale_scalen2x(src, &return_pos[0], x, y, Xres, Yres, bpp);
+
+            pos = (4 * y * Xres + 2 * x) * bpp;
+            pixel_copy(dst, pos,       src, return_pos[0], bpp);
+            pixel_copy(dst, pos + bpp, src, return_pos[1], bpp);
+
+            pos += 2 * Xres * bpp;
+            pixel_copy(dst, pos,       src, return_pos[2], bpp);
+            pixel_copy(dst, pos + bpp, src, return_pos[3], bpp);
+        }
+}
+
+// scaler_scalenx_3x
+//
+// Scales image in *sp up by 3x into *dp
+//
+// *sp : pointer to source uint32 buffer of Xres * Yres, 4BPP RGBA
+// *dp : pointer to output uint32 buffer of 3 * Xres * 3 * Yres, 4BPP RGBA
+// Xres, Yres: resolution of source image
+//
+void scaler_scalenx_3x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
+{
+    int       bpp;
+    int       x, y;
+    uint32_t  pos;
+    uint32_t  return_pos[9];
+    uint8_t * src, * dst;
+
+    bpp = BYTE_SIZE_RGBA_4BPP;  // Assume 4BPP RGBA
+    src = (uint8_t *) sp;
+    dst = (uint8_t *) dp;
+
+    for (y=0; y < Yres; y++)
+        for (x=0; x < Xres; x++)
+        {
+            scale_scalen3x(src, &return_pos[0], x, y, Xres, Yres, bpp);
+
+
+            pos = (9 * y * Xres + 3 * x) * bpp;
+            pixel_copy(dst, pos,           src, return_pos[0], bpp);
+            pixel_copy(dst, pos + bpp,     src, return_pos[1], bpp);
+            pixel_copy(dst, pos + 2 * bpp, src, return_pos[2], bpp);
+
+            pos += 3 * Xres * bpp;
+            pixel_copy(dst, pos,           src, return_pos[3], bpp);
+            pixel_copy(dst, pos + bpp,     src, return_pos[4], bpp);
+            pixel_copy(dst, pos + 2 * bpp, src, return_pos[5], bpp);
+
+            pos += 3 * Xres * bpp;
+            pixel_copy(dst, pos,           src, return_pos[6], bpp);
+            pixel_copy(dst, pos + bpp,     src, return_pos[7], bpp);
+            pixel_copy(dst, pos + 2 * bpp, src, return_pos[8], bpp);
+
+        }
+}
+
+// scaler_scalenx_4x
+//
+// 4x is just the 2x scaler run twice
+// Scales image in *sp up by 4x into *dp
+//
+// *sp : pointer to source uint32 buffer of Xres * Yres, 4BPP RGBA
+// *dp : pointer to output uint32 buffer of 4 * Xres * 4 * Yres, 4BPP RGBA
+// Xres, Yres: resolution of source image
+//
+void scaler_scalenx_4x(uint32_t * sp,  uint32_t * dp, int Xres, int Yres)
+{
+    long       buffer_size_bytes_2x;
+    uint32_t * p_tempbuf;
+
+    // Apply the first 2x scaling
+    scaler_scalenx_2x(sp, dp, Xres, Yres);
+
+    // Copy the 2x scaled image into a temp buffer
+    // then scale it up 2x again
+    buffer_size_bytes_2x = Xres * 2 * Yres * 2 * BYTE_SIZE_RGBA_4BPP;
+    p_tempbuf = (uint32_t*) malloc(buffer_size_bytes_2x);
+
+    memcpy(p_tempbuf, dp, buffer_size_bytes_2x);
+
+    // Apply the second 2x scaling
+    scaler_scalenx_2x(p_tempbuf, dp, Xres * 2, Yres * 2);
+
+    free(p_tempbuf);
+}
+
+void scaler_scalenx(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor)
+{
+    switch (scalefactor)
+    {
+    case 2:
+        scaler_scalenx_2x(sp, dp, Xres, Yres);
+        break;
+    case 3:
+        scaler_scalenx_3x(sp, dp, Xres, Yres);
+        break;
+    case 4:
+        scaler_scalenx_4x(sp, dp, Xres, Yres);
         break;
     default:
         break;

@@ -24,17 +24,20 @@
 extern "C" {
 #endif
 
-// XBR scaler
-    void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight, int scaleFactor);
+// ScaleX scaler
+    void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
+
+// ScaleNearX scaler
+    void scaler_scalenx(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
+
+// Eagle scaler
+    void scaler_eagle(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
 
 // HQX scaler
     void hqx(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
 
-// ScaleX scaler
-    void scaler_scalex(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
-
-// Eagle scaler
-    void scaler_eagle(uint32_t * sp,  uint32_t * dp, int Xres, int Yres, int scalefactor);
+// XBR scaler
+    void xbr_filter( uint32_t *src, uint32_t *dst, int inWidth, int inHeight, int scaleFactor);
 
 #ifdef __cplusplus
 }

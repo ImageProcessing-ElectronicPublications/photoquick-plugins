@@ -24,12 +24,15 @@ void FilterPlugin:: UpcaleX(int method, int n/*factor*/)
         scaler_scalex((uint*)src, (uint*)dst, w, h, n);
         break;
     case 1:
-        scaler_eagle((uint*)src, (uint*)dst, w, h, n);
+        scaler_scalenx((uint*)src, (uint*)dst, w, h, n);
         break;
     case 2:
-        hqx((uint*)src, (uint*)dst, w, h, n);
+        scaler_eagle((uint*)src, (uint*)dst, w, h, n);
         break;
     case 3:
+        hqx((uint*)src, (uint*)dst, w, h, n);
+        break;
+    case 4:
         xbr_filter((uint*)src, (uint*)dst, w, h, n);
         break;
     default:
